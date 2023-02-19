@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+<!-- Overriding TITLE Block from base.html -->
+{% block title %}Login{% endblock %}
+
+<!-- Overriding CONTENT Block from base.html -->
+{% block content %}
+
+<!-- Form for E-mail and Password login submission (sends POST) -->
+<form method="POST">
+    <h2 align="center">Login</h2>
+    
+    <!-- Email -->
+    <div class="form-group">
+        <label for="email">Email Address</label>
+        <input 
+            type="email" 
+            class="form-control" 
+            id="email" 
+            name="email" 
+            placeholder="Enter email"/>
+    </div>
+
+    <!-- Password -->
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input 
+            type="text" 
+            class="form-control" 
+            id="password" 
+            name="password" 
+            placeholder="Enter password"/>
+        </div>
+        <br />
+        <button type="submit" class="btn btn-primary">Login</button>
+        
+</form>
+
+
+{% endblock %}
+

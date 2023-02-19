@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+<!-- Overriding TITLE Block from base.html -->
+{% block title %}Sign Up{% endblock %}
+
+<!-- Overriding CONTENT Block from base.html -->
+{% block content %}
+
+<!-- Form to send POST request 
+     Holds sections for E-Mail, Username, and 2 Passwords -->
+<form method="POST">
+    <h2 align="center">Sign Up</h2>
+
+    <!-- Email Box-->
+    <div class="form-group">
+        <label for="email">Email Address</label>
+        <input 
+            type="email" 
+            class="form-control" 
+            id="email" 
+            name="email" 
+            placeholder="Enter email" 
+        />
+
+    <!-- User Name Box -->
+    <div class="form-group">
+        <label for="username">Username</label>
+        <input 
+            type="text" 
+            class="form-control" 
+            id="username" 
+            name="username" 
+            placeholder="Enter Username" 
+        />
+
+    <!-- First Password Box -->
+    <div class="form-group">
+        <label for="password1">Password</label>
+        <input 
+            type="text" 
+            class="form-control" 
+            id="password1" 
+            name="password1" 
+            placeholder="Enter password" 
+        />
+    <!-- Second Password Box-->
+    <div class="form-group">
+        <label for="password2">Confirm Password</label>
+        <input 
+            type="text" 
+            class="form-control" 
+            id="password2" 
+            name="password2" 
+            placeholder="Confirm Password" 
+        />
+    <br>
+
+    <!-- Submit Button -->
+    <button type="submit" class="btn btn-primary">Submit</button>
+        
+</form>
+
+
+
+{% endblock %}
+
+
+
+
