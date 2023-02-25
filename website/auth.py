@@ -1,4 +1,6 @@
 from flask import flash, Blueprint, render_template, request
+from .database import *
+import bcrypt
 
 # Define the "auth" blueprint to handle authorization and security
 auth = Blueprint("auth", __name__)
@@ -9,8 +11,19 @@ Redirect to the login page
 '''
 @auth.route("/login", methods=['GET', 'POST'])
 def login():
-    data = request.form
-    print(data)
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+       
+        # Check username exists
+        if not username_exists(username):         
+            flash("Username does not exist", category="error")
+        elif not bcrypt.checkpw(password.encode("utf-8"), get_password(username)):
+            flash("Password is incorrect", category="error")
+        else:
+            flash("Login Successful", category="success")
+            return render_template("home.html", user=username)
+    
     return render_template("login.html")
 
 '''
@@ -41,12 +54,17 @@ def sign_up():
             flash("Username must be longer than 3 characters.", category="error")
         elif pass1 != pass2:
             flash("Passwords do not match.", category="error")
+        elif email_exists(email):
+            flash("E-mail already in use", category="error")
+        elif username_exists(username):
+            flash("Username already in use", category="error")
         else:
-            # Ensure E-Mail is unique
-            # Ensure Username is unique
             # Encrypt passwd and store
-            pass
-        # return render_template("login.html")
-        # Render login page after signing up ?
+            encpass = bcrypt.hashpw(pass1.encode("utf-8"), bcrypt.gensalt())
+            insert_new_user(username, encpass, email) 
+            
+            # Render login page after successful sign up
+            return render_template("login.html")
+    
     return render_template("sign_up.html")
 
