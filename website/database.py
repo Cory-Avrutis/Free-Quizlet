@@ -62,10 +62,11 @@ users.insert_one(root)
 '''
 
 # To update a field in a record
+'''
 filt = {"username" : "root"}
 update = {"$set" : {"password" : bcrypt.hashpw("root".encode("utf-8"), bcrypt.gensalt())}}
 users.update_one(filt, update)
-
+'''
 print("Success")
 
 
