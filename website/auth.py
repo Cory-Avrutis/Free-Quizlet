@@ -1,5 +1,7 @@
-from flask import flash, Blueprint, render_template, request
+from flask import url_for, flash, Blueprint, render_template, request, redirect
+from flask_login import login_user, login_required, logout_user, current_user
 from .database import *
+from .models import User
 import bcrypt
 
 # Define the "auth" blueprint to handle authorization and security
@@ -18,20 +20,25 @@ def login():
         # Check username exists
         if not username_exists(username):         
             flash("Username does not exist", category="error")
+        # Check password is correct
         elif not bcrypt.checkpw(password.encode("utf-8"), get_password(username)):
             flash("Password is incorrect", category="error")
         else:
             flash("Login Successful", category="success")
-            return render_template("home.html", user=username)
+            user = User(username)
+            login_user(user, remember=True)
+            return redirect(url_for('views.home'))
     
-    return render_template("login.html")
+    return render_template("login.html", user=current_user)
 
 '''
 Redirect to the logout page
 '''
 @auth.route("/logout")
+@login_required
 def logout():
-	return "<p>Logout</p>"
+    logout_user()
+    return redirect(url_for("auth.login"))
 
 '''
 Redirect to the sign-up page
@@ -45,7 +52,6 @@ def sign_up():
         username = request.form.get('username')
         pass1 = request.form.get('password1')
         pass2 = request.form.get('password2')
-        print(email,username,pass1,pass2)    
     
         # Validate User information and security checks
         if len(email) < 4:
@@ -64,7 +70,7 @@ def sign_up():
             insert_new_user(username, encpass, email) 
             
             # Render login page after successful sign up
-            return render_template("login.html")
+            return redirect(url_for("auth.login"))
     
-    return render_template("sign_up.html")
+    return render_template("sign_up.html", user=current_user)
 

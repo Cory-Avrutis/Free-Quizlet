@@ -39,6 +39,11 @@ def username_exists(usr):
         return True
     return False
 
+# return username given the email
+def get_username(email):
+    usr = users.find_one({"email" : email})
+    return usr["username"]
+
 # returns encrypted password for usr from db
 def get_password(usr):
     if users.find_one({"username" : usr}):
@@ -67,7 +72,7 @@ filt = {"username" : "root"}
 update = {"$set" : {"password" : bcrypt.hashpw("root".encode("utf-8"), bcrypt.gensalt())}}
 users.update_one(filt, update)
 '''
-print("Success")
+#print("Success")
 
 
 
