@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, url_for, redirect, render_template, request
 from flask_login import login_required, current_user
 
 
@@ -12,5 +12,3 @@ Redirects to main page with user if logged in
 @login_required
 def home():
     return render_template("home.html", user=current_user)
-
-
