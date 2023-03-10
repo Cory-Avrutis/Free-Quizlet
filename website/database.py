@@ -8,9 +8,10 @@
 
 from pymongo import MongoClient
 import bcrypt
+import certifi
 
-conn_str = "mongodb+srv://quizuser:quizpassword@quizlet.gnboxhj.mongodb.net/?retryWrites=true&w=majority"
-client = MongoClient(conn_str)
+conn_str = "mongodb+srv://quizuser:quizpassword@quizlet.gnboxhj.mongodb.net/quizlet?retryWrites=true&w=majority"
+client = MongoClient(conn_str, tlsCAFile=certifi.where())
 
 
 db = client["quizlet"]
@@ -72,6 +73,7 @@ filt = {"username" : "root"}
 update = {"$set" : {"password" : bcrypt.hashpw("root".encode("utf-8"), bcrypt.gensalt())}}
 users.update_one(filt, update)
 '''
+#username_exists("root")
 #print("Success")
 
 
