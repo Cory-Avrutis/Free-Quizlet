@@ -1,56 +1,103 @@
 {% extends "base.html" %}
 
-<!-- Overriding TITLE Block from base.html -->
-{% block title %}Login{% endblock %}
+{% block title %}Create Study Set{% endblock %}
 
-<!-- Overriding CONTENT Block from base.html -->
 {% block content %}
 
-<!-- Form for card creation (sends POST) -->
+<!-- Form for study set creation (sends POST) -->
 <form method="POST">
     <h2 align="center">Create a new study set</h2>
     
     <!-- Title of the set  -->
-
     <div class="form-group">
-        <label for="Title">Title of the set</label>
+        <label for="title">Title of the set</label>
         <input 
             type="text" 
             class="form-control" 
-            id="Title" 
-            name="Title of the set" 
+            id="title" 
+            name="title" 
             placeholder="Enter title"/>
     </div>
 
-    
+    <!-- Cards -->
+    <div id="cards">
+        <!-- The initial card. This code is borrowed in the loop from javascript by getElementbyID -->
+        <div class="card">
+            <h3>Card 1</h3>
 
-    <!-- Front of card -->
-    <div class="form-group">
-        <label for="Term">Front of card</label>
-        <input 
-            type="text" 
-            class="form-control" 
-            id="Term" 
-            name="Term of the card" 
-            placeholder="Enter the Term"/>
+            <!-- Front of card -->
+            <div class="form-group">
+                <label for="term">Front of card</label>
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    id="term1" 
+                    name="term1" 
+                    placeholder="Enter the term"/>
+            </div>
+
+            <!-- Back of card -->
+            <div class="form-group">
+                <label for="definition">Back of card</label>
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    id="definition1" 
+                    name="definition1" 
+                    placeholder="Enter the definition"/>
+            </div>
+        </div>
     </div>
 
-    <!-- Back of card -->
-    <div class="form-group">
-        <label for="Definition">Back of card</label>
-        <input 
-            type="text" 
-            class="form-control" 
-            id="Definition" 
-            name="Definition of the card" 
-            placeholder="Enter definition"/>
-        </div>
-        <br />
+    <!-- Add Card Button -->
+    <button type="button" class="btn btn-secondary" onclick="addCard()">Add Card</button>
+    
+    <br /><br />
 
-        <button type="submit" class="btn btn-primary">Submit</button>
-        
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 
+<!-- JavaScript code below for interactability between user and adding a card mechanics. remember, comments in javascript are done by // and everything must end in a ;-->
+
+<script>
+    let cardCount = 1;
+
+    function addCard() {    
+        cardCount++
+
+        const cardsDiv = document.getElementById("cards");     // targets the elements on the document by the id cards (refer to line 23 . . . <div id = 'cards'>)
+
+        const newCard = document.createElement("div");         // creates a div. does not display on homepage. moreso creating a div in memory. we will write contents to this div to populate card 
+        newCard.classList.add("card");                         // adds a CSS class card to that div element. similiar to line 25 (... <div id = 'card')
+
+        const cardTitle = document.createElement("h3");        // creates a new element in memory but doesn't display it on the page just yet
+        cardTitle.innerText = `Card ${cardCount}`;             // To show user what card they are working on
+
+        const termInput = document.createElement("input");     // sets up input flow for term of card
+        termInput.type = "text";
+        termInput.classList.add("form-control");               //like the above, this does 
+        termInput.name = `term_${cardCount}`;
+        termInput.placeholder = "Enter the term";
+
+        const definitionInput = document.createElement("input"); // sets up input flow for definition of card 
+        definitionInput.type = "text";
+        definitionInput.classList.add("form-control");
+        definitionInput.name = `definition_${cardCount};`
+        definitionInput.placeholder = "Enter the definition";
+
+        newCard.appendChild(cardTitle);                           //puts it all together for the user. lines 88-95 are input/output codes
+        newCard.appendChild(document.createElement("br"));
+        newCard.appendChild(document.createElement("br"));
+        newCard.appendChild(document.createTextNode("Front of card: "));
+        newCard.appendChild(termInput);
+        newCard.appendChild(document.createElement("br"));
+        newCard.appendChild(document.createTextNode("Back of card: "));
+        newCard.appendChild(definitionInput);
+
+        cardsDiv.appendChild(newCard)                           //when newCard is done being set up, place the newCard into the cardsDiv area
+    }
+</script>
+
+<!-- by the time the script is done, entities in the cardsDiv will contain ALL the cards of the given card set -->
 
 {% endblock %}
-
