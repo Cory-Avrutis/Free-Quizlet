@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+<!-- Overriding TITLE Block from base.html -->
+{% block title %}Login{% endblock %}
+
+<!-- Overriding CONTENT Block from base.html -->
+{% block content %}
+
+<!-- Form for card creation (sends POST) -->
+<form method="POST">
+    <h2 align="center">Create a new study set</h2>
+    
+    <!-- Title of the set  -->
+
+    <div class="form-group">
+        <label for="Title">Title of the set</label>
+        <input 
+            type="text" 
+            class="form-control" 
+            id="Title" 
+            name="Title of the set" 
+            placeholder="Enter title"/>
+    </div>
+
+    
+
+    <!-- Front of card -->
+    <div class="form-group">
+        <label for="Term">Front of card</label>
+        <input 
+            type="text" 
+            class="form-control" 
+            id="Term" 
+            name="Term of the card" 
+            placeholder="Enter the Term"/>
+    </div>
+
+    <!-- Back of card -->
+    <div class="form-group">
+        <label for="Definition">Back of card</label>
+        <input 
+            type="text" 
+            class="form-control" 
+            id="Definition" 
+            name="Definition of the card" 
+            placeholder="Enter definition"/>
+        </div>
+        <br />
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+        
+</form>
+
+
+{% endblock %}
+

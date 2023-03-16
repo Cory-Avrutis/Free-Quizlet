@@ -12,3 +12,9 @@ Redirects to main page with user if logged in
 @login_required
 def home():
     return render_template("home.html", user=current_user)
+
+@views.route("/create_set", methods =['POST', 'GET'])
+@login_required
+def create_set():
+    return render_template("create_set.html", user=current_user)
+
