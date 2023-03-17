@@ -27,28 +27,30 @@
 
             <!-- Front of card -->
             <div class="form-group">
-                <label for="term">Front of card</label>
+                <label for="term">Front of card:</label>
                 <input 
                     type="text" 
                     class="form-control" 
-                    id="term1" 
-                    name="term1" 
+                    id="term_1" 
+                    name="term_1" 
                     placeholder="Enter the term"/>
             </div>
 
             <!-- Back of card -->
             <div class="form-group">
-                <label for="definition">Back of card</label>
+                <label for="definition">Back of card:</label>
                 <input 
                     type="text" 
                     class="form-control" 
-                    id="definition1" 
-                    name="definition1" 
+                    id="definition_1" 
+                    name="definition_1" 
                     placeholder="Enter the definition"/>
             </div>
         </div>
     </div>
 
+    <input type="hidden" name="num_cards" id="num_cards" value="1">
+    
     <!-- Add Card Button -->
     <button type="button" class="btn btn-secondary" onclick="addCard()">Add Card</button>
     
@@ -77,12 +79,14 @@
         termInput.type = "text";
         termInput.classList.add("form-control");               //like the above, this does 
         termInput.name = `term_${cardCount}`;
+        termInput.id = `term_${cardCount}`;
         termInput.placeholder = "Enter the term";
 
         const definitionInput = document.createElement("input"); // sets up input flow for definition of card 
         definitionInput.type = "text";
         definitionInput.classList.add("form-control");
-        definitionInput.name = `definition_${cardCount};`
+        definitionInput.name = `definition_${cardCount}`;
+        definitionInput.id = `definition_${cardCount}`;
         definitionInput.placeholder = "Enter the definition";
 
         newCard.appendChild(cardTitle);                           //puts it all together for the user. lines 88-95 are input/output codes
@@ -95,6 +99,7 @@
         newCard.appendChild(definitionInput);
 
         cardsDiv.appendChild(newCard)                           //when newCard is done being set up, place the newCard into the cardsDiv area
+        document.getElementById('num_cards').value = cardCount;
     }
 </script>
 
