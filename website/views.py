@@ -2,10 +2,12 @@ from flask import Blueprint, url_for, redirect, render_template, request
 from flask_login import login_required, current_user
 
 from .models import User
-
+from .database import *
 
 # Define a blueprint called "views" for webpage viewing
 views = Blueprint("views", __name__)
+
+
 
 ''' 
 Redirects to main page with user if logged in 
@@ -22,8 +24,8 @@ def create_set():
 
         user = User(current_user)
 
-        print("The user's name is ", user.get_id())
-        numcards = int(request.form.get('num_cards'))    
+        numcards = int(request.form.get('num_cards')) 
+
         card_set = {}
 
         title = request.form.get(f'title')
@@ -33,9 +35,12 @@ def create_set():
 
             if term != "" and defn != "" and title != "":
                 card_set[term] = defn
-                card_set["Title"] = title 
-                card_set["User"] = current_user.get_id()   #<-- cash money
-        print(card_set)
+
+            if i == numcards: #last iteration
+                print("Numcards is ", numcards)
+                print("i is ", i)
+                print(card_set)
+                insert_new_cards(card_set, title, current_user.get_id())
         
     return render_template("create_set.html", user=current_user)
 

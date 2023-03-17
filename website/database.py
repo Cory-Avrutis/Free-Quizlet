@@ -18,6 +18,7 @@ db = client["quizlet"]
 users = db["users"]
 
 
+
 # inserts a new user record into a collection
 def insert_new_user(usr, pwd, email):
     rec = {
@@ -50,7 +51,18 @@ def get_password(usr):
     if users.find_one({"username" : usr}):
         user = users.find_one({"username" : usr})
         return user["password"]
+    
 
+    
+sets = db["sets"]
+def insert_new_cards(cards : dict, title : str, usr : str,):
+    rec = {
+        "Cards" : cards,    #this prob won't work right because cards is itself a dictionary. update: it did work !
+        "Title" : title,
+        "User" : usr
+    }
+    users.insert_one(rec)
+    
 
 # To create a collection in db
 # newColl = db["new_coll_name"]
