@@ -16,7 +16,7 @@ client = MongoClient(conn_str, tlsCAFile=certifi.where())
 
 db = client["quizlet"]
 users = db["users"]
-
+card_sets = db["card_sets"]
 
 
 # inserts a new user record into a collection
@@ -52,16 +52,14 @@ def get_password(usr):
         user = users.find_one({"username" : usr})
         return user["password"]
     
-
-    
-sets = db["sets"]
-def insert_new_cards(cards : dict, title : str, usr : str,):
+# inserts a new record into card_sets collection    
+def insert_new_card_set(cards : dict, title : str, usr : str,):
     rec = {
-        "Cards" : cards,    #this prob won't work right because cards is itself a dictionary. update: it did work !
+        "Cards" : cards,    
         "Title" : title,
         "User" : usr
     }
-    users.insert_one(rec)
+    card_sets.insert_one(rec)
     
 
 # To create a collection in db
