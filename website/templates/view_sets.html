@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}View Study Set{% endblock %}
+
+{% block content %}
+
+<!-- Form for study set creation (sends POST) -->
+<form action = "{{ url_for('views.select_set') }}" method="POST">
+    <h2 align="center">Select a Set to Study</h2>
+
+    <div class="col-lg px-lg-5">
+    {% for set in userSets %}
+       
+            <div class="row">
+                <!-- <a href = "/show_set">
+                    <button type="button" class="btn btn-dark" value="create">
+                        {{set['Title']}}
+                    </button>
+                </a> -->
+                <input type = "submit" value = "{{set['Title']}}" name = "title"  />
+            </div>
+        
+    {% endfor %}
+    </div>
+    
+</form>
+
+
+{% endblock %}

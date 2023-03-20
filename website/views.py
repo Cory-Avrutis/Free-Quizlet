@@ -26,7 +26,6 @@ Handles the POST when user submits new set to add
 def create_set():
     if request.method == 'POST':
 
-        user = User(current_user)
 
         numcards = int(request.form.get('num_cards')) 
 
@@ -58,3 +57,27 @@ def create_set():
     
     return render_template("create_set.html", user=current_user)
 
+@views.route("/view_sets", methods =['POST', 'GET'])
+@login_required
+def view_sets():
+    userSets = []
+
+    print("user id is ", current_user.get_id())
+    for setCurr in card_sets.find({"User": current_user.get_id()}):
+        userSets.append(setCurr)
+        print(setCurr)
+            
+
+
+    return render_template("view_sets.html", user=current_user, userSets = userSets)
+
+@views.route("/show_set", methods =['POST', 'GET'])
+@login_required
+def select_set():
+    title = ""
+    if request.method == 'POST':
+        title = request.form['title']
+
+    cardSet = card_sets.find_one( {"User": current_user.get_id(), "Title": title} )
+    cards = cardSet['Cards']
+    return render_template("show_set.html", user=current_user, cards=cards, title=title)
