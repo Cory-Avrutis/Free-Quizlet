@@ -3,23 +3,43 @@
 {% block title %}View Study Set{% endblock %}
 
 {% block content %}
+<head>
+    <style>
 
-<!-- Form for study set creation (sends POST) -->
-<form action = "{{ url_for('views.select_set') }}" method="POST">
+        /* container for all buttons, basically a column with certain width */
+        .buttons {
+            margin: auto;
+            vertical-align: center;
+            width: 300px;
+            height: 250px;
+        }
+
+        /* container for indivual button, padding is distance from each other, min width helps them be the same size */
+        .set-button {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            min-width: 300px;
+        }
+
+        /* add color with hover and active selectors, to the button when mouse hovers over it */
+        .set-button:hover, .set-button:active {
+            color: #a2d5ab;
+        }
+     
+    </style>
+</head>
+
+<!-- Form for selecting a set to study (sends POST) -->
+<form action = "{{ url_for('views.select_set') }}" method="POST" >
+
     <h2 align="center">Select a Set to Study</h2>
-
-    <div class="col-lg px-lg-5">
+    
+    <!-- show all available sets if any -->
+    <div class="buttons">
     {% for set in userSets %}
-       
-            <div class="row">
-                <!-- <a href = "/show_set">
-                    <button type="button" class="btn btn-dark" value="create">
-                        {{set['Title']}}
-                    </button>
-                </a> -->
-                <input type = "submit" value = "{{set['Title']}}" name = "title"  />
-            </div>
-        
+        <div class="set-button">
+                <input type = "submit" class="btn btn-dark set-button" value = "{{set['Title']}}" name = "title"  />
+        </div>
     {% endfor %}
     </div>
     
