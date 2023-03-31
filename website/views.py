@@ -7,8 +7,6 @@ from .database import *
 # Define a blueprint called "views" for webpage viewing
 views = Blueprint("views", __name__)
 
-
-
 ''' 
 Redirects to main page with user if logged in 
 '''
@@ -26,11 +24,8 @@ Handles the POST when user submits new set to add
 def create_set():
     if request.method == 'POST':
 
-
         numcards = int(request.form.get('num_cards')) 
-
         card_set = {}
-
         title = request.form.get(f'title')
             
         # Ensure Title not blank
@@ -67,9 +62,8 @@ def view_sets():
         userSets.append(setCurr)
         print(setCurr)
             
-
-
     return render_template("view_sets.html", user=current_user, userSets = userSets)
+
 
 @views.route("/show_set", methods =['POST', 'GET'])
 @login_required
@@ -81,3 +75,28 @@ def select_set():
     cardSet = card_sets.find_one( {"User": current_user.get_id(), "Title": title} )
     cards = cardSet['Cards']
     return render_template("show_set.html", user=current_user, cards=cards, title=title)
+
+
+@views.route("/edit_set", methods = ['POST', 'GET'])
+@login_required
+def select_set_2_edit():
+    userSets = []
+
+    for setCurr in card_sets.find({"User": current_user.get_id()}): #
+        userSets.append(setCurr)
+        print(setCurr)
+            
+    return render_template("view_sets_2_edit.html", user=current_user, userSets = userSets)
+
+@views.route("modify_set", methods = ['POST', 'GET'])
+@login_required
+def edit():
+    title = ""
+    if request.method == 'POST':
+        title = request.form['title']
+
+    cardSet = card_sets.find_one( {"User": current_user.get_id(), "Title": title} )
+    cards = cardSet['Cards']
+
+    
+    return render_template("edit_set.html", user=current_user, cards=cards, title=title)
