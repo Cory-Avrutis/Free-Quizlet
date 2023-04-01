@@ -87,31 +87,24 @@
     }
 
     /* css code for my modals (pop-ups)*/
-
     .modal2 {
         position: fixed;
         top: 50%;
         left: 50%;
-
         transform: translate(-50%, -50%) scale(0);
         transition: 200ms ease-in-out;
-        border: 1px solid black;
+        /*border: 1px solid black;*/
         border-radius: 10px;
-
         z-index: 10;
         background-color: white;
-
         width: 500px;
         height: 300px; 
-        max-width: 80%;
-
         
-
+        max-width: 80%;
     }
 
-    .modal2.active
-    {
-        transform: translate(-50%, -50%) scale(1)
+    .modal2.active {
+    transform: translate(-50%, -50%) scale(1)
     }
 
     .modal2-header {
@@ -119,17 +112,19 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+
+        border-top: solid black;
         border-bottom: 1px solid black;
+        border-left: solid black;
+        border-right: solid black;
     }
 
-    .modal2-header .title
-    {
+    .modal2-header .title {
         font-size: 1.25rem;
         font-weight: bold;
     }
 
-    .modal2-header .close-button
-    {
+    .modal2-header .close-button {
         cursor: pointer;
         border: none;
         outline: none;
@@ -138,9 +133,13 @@
     }
 
     .modal2-body {
-    height: calc(100% - 40px); 
-    display: flex;
-    flex-direction: column;
+        height: calc(100% - 80px); 
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        border-bottom: solid black;
+        border-left: solid black;
+        border-right: solid black;
     }
 
     .modal2-body textarea {
@@ -152,8 +151,7 @@
         resize: none;
     }
 
-    .modal2-body done_button
-    {
+    .modal2-body .done-button {
         position: absolute;
         bottom: 10px;
         right: 10px;
@@ -166,6 +164,7 @@
         display: inline-block;
         font-size: 20px;
     }
+
 
     #overlay
     {
@@ -218,13 +217,11 @@
 
     <div class="modal2-body">
         <textarea id="user_text_input" name="user_text_input" placeholder="Enter your text here"></textarea>
-    </div>
 
-    <button id="title_done" class="title-done-button done-button">
-        Done
-      </button>
-      
-    
+        <button id="title_done" class="title-done-button done-button">
+            Done
+        </button>
+    </div>
 </div>
 
 
