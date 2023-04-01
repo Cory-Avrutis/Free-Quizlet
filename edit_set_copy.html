@@ -63,9 +63,9 @@
       margin: auto;
     }
 
-    /*css code for my button */
+    /*css code for my buttons */
 
-    /* style button container */
+    /* style for the title and add a card button */
     .title-container {
       display: flex;
       justify-content: center;
@@ -73,7 +73,7 @@
       margin-bottom: 20px;
     }
 
-    /* style for the title button. i'll also use this for add a card button */
+    /* style for the title button */
     .title-button {
       background-color: #39aea9;
       border: none;
@@ -86,13 +86,11 @@
       margin-right: 10px;
     }
 
-    /* css code for my modals (pop-ups)*/
-
-    .modal2 {
+    .modal
+    {
         position: fixed;
         top: 50%;
         left: 50%;
-
         transform: translate(-50%, -50%) scale(0);
         transition: 200ms ease-in-out;
         border: 1px solid black;
@@ -100,21 +98,17 @@
 
         z-index: 10;
         background-color: white;
-
         width: 500px;
-        height: 300px; 
-        max-width: 80%;
-
-        
-
+        max-width:80%;
     }
 
-    .modal2.active
+    .modal.active
     {
         transform: translate(-50%, -50%) scale(1)
     }
 
-    .modal2-header {
+    .modal-header
+    {
         padding: 10px 15px;
         display: flex;
         justify-content: space-between;
@@ -122,113 +116,110 @@
         border-bottom: 1px solid black;
     }
 
-    .modal2-header .title
+    .modal-header .title
     {
         font-size: 1.25rem;
         font-weight: bold;
     }
 
-    .modal2-header .close-button
+    .modal-header .close-button
     {
         cursor: pointer;
         border: none;
         outline: none;
         background: none;
         font-size: 1.25rem;
+        font-weight: bold;
     }
 
-    .modal2-body {
-    height: calc(100% - 40px); 
-    display: flex;
-    flex-direction: column;
-    }
-
-    .modal2-body textarea {
-        flex: 1;
-        border: none;
-        outline: none;
-        padding: 10px;
-        font-size: 16px;
-        resize: none;
-    }
-
-    .modal2-body done_button
+    .modal-body 
     {
-        position: absolute;
-        bottom: 10px;
-        right: 10px;
-        background-color: #39aea9;
-        border: none;
-        color: white;
-        padding: 10px 20px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 20px;
+        padding: 10px 15px
     }
 
     #overlay
     {
-        position:  fixed;
+        position: fixed;
         opacity: 0;
-        transition: 200ms ease-in-out;
+        transition:  200ms ease-in-out;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: rgba(0,0,0,.5);
-        pointer-events: none;
 
+        background-color: rgba(0,0,0,0);
+        pointer-events:none;
     }
 
     #overlay.active
     {
         opacity: 1;
         pointer-events: all;
-    }
 
+    }
+    
   </style>
 
-  
+
+  <script>
+
+    const openModalButtons = document.querySelectorAll('[data-modal-target]')
+    const closeModalButtons = document.querySelectorAll('[data-close-button]')
+    const overlay = document.getElementById('overlay')
+
+    openModalButtons.forEach(button =>
+    {
+        const modal = document.querySelector(button.dataset.modalTarget)
+        openModal(modal)
+    })
+
+    overlay.addEventListener('click', () => {
+    const modals = document.querySelectorAll('.modal.active')
+    
+        modals.forEach(modal => {
+            closeModal(modal)
+        })
+    })
+
+    closeModalButtons.forEach(button => {
+        const modal = button.closest('.modal')
+        closeModal(modal)
+    })
+
+    function openModal(modal){
+        if(modal == null)return
+
+        modal.classList.add('active')
+        overlay.classList.add('active')
+    }
+
+    function closeModal(modal)
+    {
+        if(modal == null)return
+        modal.classList.remove('active')
+        overlay.classList.remove('active')
+    }
+
+  </script>
 </head>
 
 
-<!--
-    Title button to trigger the modal to change the title
--->
-<div class="title-container">
-    <button id="myBtn" class="title-button" data-modal-target="#modal_title">{{ title }}</button>
+
+
+<button class="title-button" data-modal-target="#my-modal">Open Modal</button>
+
+<!-- Modal -->
+<div id="my-modal" class="modal">
+  <div class="modal-header">
+    <h2 class="title">Modal Title</h2>
+    <button class="close-button" data-close-button>&times;</button>
+  </div>
+  <div class="modal-body">
+    <p>This is the content of the modal.</p>
+  </div>
 </div>
 
 
-<!--
-    Modal to receive input after edit title button was clicked
--->
-
-<div class = "modal2" id="modal_title">
-    <div class = "modal2-header">
-        <div class = "title">
-            Please enter a new title to rename '{{ title }}'
-        </div>
-
-        <button data-close-button ="" class = "close-button">
-            &times;
-        </button>      
-    </div>
-
-    <div class="modal2-body">
-        <textarea id="user_text_input" name="user_text_input" placeholder="Enter your text here"></textarea>
-    </div>
-
-    <button id="title_done" class="title-done-button done-button">
-        Done
-      </button>
-      
-    
-</div>
-
-
-<div id="overlay"></div>
 
 <!-- create a flashcard for every card in the set -->
 {% for term in cards %}
@@ -248,45 +239,10 @@
   </div>
 {% endfor %}
 
-<script>
-    const openModalButtons = document.querySelectorAll('[data-modal-target]')
-    const closeModalButtons = document.querySelectorAll('[data-close-button]')
-    const overlay = document.getElementById('overlay')
 
-    openModalButtons.forEach(button =>{
-        button.addEventListener('click', () =>{
-            const modal = document.querySelector(button.dataset.modalTarget)
-            openModal(modal)
-        })
-    })
-
-    overlay.addEventListener('click', ()=>{
-        const Modals = document.querySelectorAll('.modal2.active')
-        Modals.forEach(modal =>{
-            closeModal(modal)
-        })
-    })
-
-    closeModalButtons.forEach(button =>{
-        button.addEventListener('click', () =>{
-            const modal = button.closest('.modal2')
-        
-            closeModal(modal)
-        })
-    })
-
-    function openModal(modal){
-        if (modal == null) return
-        modal.classList.add('active')
-        overlay.classList.add('active')
-    }
-
-    function closeModal(modal){
-        if (modal == null) return
-        modal.classList.remove('active')
-        overlay.classList.remove('active')
-    }
-</script>
+<!-- Add a card button -->
+<div class="title-container">
+    <button class="title-button">Add a card</button>
+</div>
 
 {% endblock %}
-

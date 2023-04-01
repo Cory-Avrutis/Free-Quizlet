@@ -1,0 +1,26 @@
+!--
+
+<button class="title-button" data-toggle="modal" data-target="#myModal">{{ title }}</button>
+
+
+
+<div class="modal" id="modal">
+    <div class="modal-header">
+        <div class ="title">
+            Example Modal
+        </div>
+
+        <button data-close-button ="close-button">
+            &times;
+        </button>
+    </div>
+
+    <div class="modal-body">
+        A small example
+    </div>
+</div>
+
+<div id="overlay">
+
+</div>
+-->
