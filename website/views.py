@@ -88,6 +88,7 @@ def select_set_2_edit():
             
     return render_template("view_sets_2_edit.html", user=current_user, userSets = userSets)
 
+
 @views.route("modify_set", methods = ['POST', 'GET'])
 @login_required
 def edit():
@@ -100,3 +101,27 @@ def edit():
 
     
     return render_template("edit_set.html", user=current_user, cards=cards, title=title)
+
+@views.route("/edit_title", methods = ['POST', 'GET'])
+@login_required
+def edit_title():
+    old_title = ""
+    new_title = ""
+
+    if request.method == 'POST':
+        old_title = request.form['old_title']
+        new_title = request.form['new_title']
+
+    print("My test\nThe old title retrieved is ", old_title)
+    print("The new title retrieved is ", new_title)
+
+    card_sets.update_one( 
+        {"User": current_user.get_id(), "Title": old_title}, #query to extract which title
+        {"$set": {"Title": new_title}}                       #query to update the title
+        ) 
+
+    
+    cardSet = card_sets.find_one( {"User": current_user.get_id(), "Title": new_title} ) #reset new parameters (cards) for edit_set to render
+    cards = cardSet['Cards']
+
+    return render_template("edit_set.html", user=current_user, cards=cards, title=new_title)

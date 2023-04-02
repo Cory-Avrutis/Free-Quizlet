@@ -65,7 +65,7 @@
 
     /*css code for my button */
 
-    /* style button container */
+    /* style button container. */
     .title-container {
       display: flex;
       justify-content: center;
@@ -73,7 +73,7 @@
       margin-bottom: 20px;
     }
 
-    /* style for the title button. i'll also use this for add a card button */
+    /* style for the title button. we'll also use this for add a card button */
     .title-button {
       background-color: #39aea9;
       border: none;
@@ -87,19 +87,28 @@
     }
 
     /* css code for my modals (pop-ups)*/
-    .modal2 {
+
+    /* Reference for modal (pop-ups) and educational credit: 
+        https://www.youtube.com/watch?v=MBaw_6cPmAw&t=473s
+
+        Quick Note: using the word 'modal' led to undefine behavior. 
+        possible reason is the word 'modal' is defined somewhere else in the project. 
+            so, the quick fix is simply using 'modal2' instead.
+    */
+
+    
+    .modal2 {   
         position: fixed;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%) scale(0);
         transition: 200ms ease-in-out;
-        /*border: 1px solid black;*/
         border-radius: 10px;
         z-index: 10;
         background-color: white;
         width: 500px;
         height: 300px; 
-        
+
         max-width: 80%;
     }
 
@@ -143,7 +152,8 @@
     }
 
     .modal2-body textarea {
-        flex: 1;
+        /* edited the modal educational video code to include input*/
+        flex: 1;    /*shoves the modal2-body textArea to fit the entire modal2-body area*/
         border: none;
         outline: none;
         padding: 10px;
@@ -152,21 +162,21 @@
     }
 
     .modal2-body .done-button {
-        position: absolute;
+        position: absolute;     /*ensures the button is on top of the input area*/
         bottom: 10px;
         right: 10px;
-        background-color: #39aea9;
-        border: none;
-        color: white;
+        background-color: #39aea9; 
+        border: none;           /*gets rid of that default border from input text area*/
+        color: white;           
         padding: 10px 20px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
+        text-align: center;  
+        text-decoration: none; /*no decorations (i.e., no underlines or stuff like that)*/
+        display: inline-block; /*basicaly, makes sure the text are within the container and doesn't write/expand outside the modal*/
         font-size: 20px;
     }
 
 
-    #overlay
+    #overlay    /*overlay is what makes the screen go dim after a modal is surfaced*/
     {
         position:  fixed;
         opacity: 0;
@@ -211,18 +221,27 @@
         </div>
 
         <button data-close-button ="" class = "close-button">
-            &times;
+            &times; <!-- Easier to style this symbol (the 'X'), insead of the actual 'X' character from keyboard-->
         </button>      
     </div>
 
     <div class="modal2-body">
-        <textarea id="user_text_input" name="user_text_input" placeholder="Enter your text here"></textarea>
+        <form action="{{ url_for('views.edit_title', title= title)  }}" method="post">
+            <input type="hidden" name="old_title" value="{{ title }}"> <!-- sends the old title. useful for database query-->
 
-        <button id="title_done" class="title-done-button done-button">
-            Done
-        </button>
+            <textarea id="user_text_input" class = "modal2-body textarea" name="new_title" placeholder="Enter your text here"></textarea> 
+        
+            <button id="title_done" class="title-done-button done-button" type="submit">
+                Done
+            </button>
+        </form>
     </div>
+
+
 </div>
+
+
+
 
 
 <div id="overlay"></div>
@@ -245,22 +264,21 @@
   </div>
 {% endfor %}
 
+
 <script>
-    const openModalButtons = document.querySelectorAll('[data-modal-target]')
-    const closeModalButtons = document.querySelectorAll('[data-close-button]')
-    const overlay = document.getElementById('overlay')
+    //code to handle modal interactibility using javascript
 
-    openModalButtons.forEach(button =>{
-        button.addEventListener('click', () =>{
-            const modal = document.querySelector(button.dataset.modalTarget)
-            openModal(modal)
-        })
-    })
 
-    overlay.addEventListener('click', ()=>{
-        const Modals = document.querySelectorAll('.modal2.active')
-        Modals.forEach(modal =>{
-            closeModal(modal)
+    const openModalButtons = document.querySelectorAll('[data-modal-target]')   //lets us grab HTML elements using a css selector (the parameter)
+    const closeModalButtons = document.querySelectorAll('[data-close-button]')  //and returns all elements in the document that match the selector as a NodeList object
+
+
+    const overlay = document.getElementById('overlay') //similiar to querySelectorAll. it just grabs a specified element by id from the document 
+
+    openModalButtons.forEach(button =>{ //so querySelectorAll returned a list of NodeList objects. now we iterate through all of them with forEach
+        button.addEventListener('click', () =>{     //and we add an eventListener to them .
+            const modal = document.querySelector(button.dataset.modalTarget)    //when they click, we extract the modal information
+            openModal(modal)                                                    //and open (present to user) it
         })
     })
 
@@ -268,20 +286,28 @@
         button.addEventListener('click', () =>{
             const modal = button.closest('.modal2')
         
+            closeModal(modal)   //same logic with openModal, but instead closes the modal rather than present to user
+        })
+    })
+
+    overlay.addEventListener('click', ()=>{     //in addition to the x button closing the modal, this func lets users click outside of modal to close 
+        const Modals = document.querySelectorAll('.modal2.active')
+        Modals.forEach(modal =>{
             closeModal(modal)
         })
     })
 
+
     function openModal(modal){
         if (modal == null) return
-        modal.classList.add('active')
-        overlay.classList.add('active')
+        modal.classList.add('active')       //updates the specific instance of a modal's active attribute.
+        overlay.classList.add('active')     //when a modal's active attribute is set, the rest of the screen should be dimmed.
     }
 
     function closeModal(modal){
         if (modal == null) return
-        modal.classList.remove('active')
-        overlay.classList.remove('active')
+        modal.classList.remove('active')    //the negation logic of above
+        overlay.classList.remove('active')  //if it's no longer active, make the rest of the screen normal
     }
 </script>
 
