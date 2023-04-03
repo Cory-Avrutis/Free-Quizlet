@@ -104,6 +104,7 @@
         transform: translate(-50%, -50%) scale(0);
         transition: 200ms ease-in-out;
         border-radius: 10px;
+        border-bottom: solid black;
         z-index: 10;
         background-color: white;
         width: 500px;
@@ -146,7 +147,6 @@
         display: flex;
         flex-direction: column;
         position: relative;
-        border-bottom: solid black;
         border-left: solid black;
         border-right: solid black;
     }
@@ -196,6 +196,20 @@
         pointer-events: all;
     }
 
+
+    /*
+        We already made the text area styling custom to fit the modal's body for input.
+
+        The form styling actually opposes the text area styling, so below just hides every css property of the form 
+    */
+    form {
+            display: contents;
+    }
+
+    form * {
+        all: unset;
+    }
+
   </style>
 
   
@@ -217,7 +231,7 @@
 <div class = "modal2" id="modal_title">
     <div class = "modal2-header">
         <div class = "title">
-            Please enter a new title to rename '{{ title }}'
+            Please enter a new title to rename '{{ title[:46] }}...' <!-- shows only first 46 characters -->
         </div>
 
         <button data-close-button ="" class = "close-button">
@@ -227,12 +241,13 @@
 
     <div class="modal2-body">
         <form action="{{ url_for('views.edit_title', title= title)  }}" method="post">
+
             <input type="hidden" name="old_title" value="{{ title }}"> <!-- sends the old title. useful for database query-->
 
             <textarea id="user_text_input" class = "modal2-body textarea" name="new_title" placeholder="Enter your text here"></textarea> 
         
             <button id="title_done" class="title-done-button done-button" type="submit">
-                Done
+                Done    
             </button>
         </form>
     </div>
@@ -296,6 +311,7 @@
             closeModal(modal)
         })
     })
+
 
 
     function openModal(modal){

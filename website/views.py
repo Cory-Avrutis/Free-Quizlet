@@ -99,7 +99,6 @@ def edit():
     cardSet = card_sets.find_one( {"User": current_user.get_id(), "Title": title} )
     cards = cardSet['Cards']
 
-    
     return render_template("edit_set.html", user=current_user, cards=cards, title=title)
 
 @views.route("/edit_title", methods = ['POST', 'GET'])
