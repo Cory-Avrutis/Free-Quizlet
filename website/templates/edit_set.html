@@ -13,14 +13,14 @@
     .flashcard-row {
       background-color: transparent;  /* the color behind the card while it flips */
       margin: auto;
-      width: 950px;
+      width: 1000px;
       height: 200px;
       padding-top: 10px;
       padding-bottom: 10px;
     }
 
     /* This container joins the front and back, it is the container that flips when hovered over*/
-    .card-row-join {
+    .flashcard-row-join {
       display: flex;
       height: 100%; 
       transition: transform 1s;
@@ -81,13 +81,27 @@
     .title-button {
       background-color: #39aea9;
       border: none;
-      color: white;
+      color: black;
       padding: 10px 20px;
       text-align: center;
       text-decoration: none;
       display: inline-block;
       font-size: 20px;
       margin-right: 10px;
+    }
+
+    .trash-button {
+      padding-top: 5px;
+      background-color: transparent;
+      align-self: center;
+      font-size: 25px;
+      margin-left: 5px;
+      margin-right: 5px;
+    }
+
+    .term-button {
+      border: none;
+      background: transparent;
     }
 
     /* css code for my modals (pop-ups)*/
@@ -265,13 +279,20 @@
 
 <div id="overlay"></div>
 
+
 <!-- create a flashcard for every card in the set -->
 {% for term in cards %}
+
+
+
   <div class="flashcard-row">
-    <div class="card-row-join">
+    <div class="flashcard-row-join">
+      <div class="trash-button">
+        <button><p>&#128465;</p></button>
+      </div>
       <div class="flashcard-term">
-        <div class="flashcard-center">
-          <h2>{{term}}</h2>
+        <div class="flashcard-center">  
+            <h2><button class="term-button" data-modal-target="#modal_term">{{term}}</button></h2> 
         </div>
       </div>
       <div class="flashcard-def">
@@ -281,7 +302,36 @@
       </div>
     </div>
   </div>
+
+  <div class = "modal2" id="modal_term">
+    <div class = "modal2-header">
+        <div class = "term">
+            Please enter a new term to rename '{{ term }}' <!-- shows only first 46 characters -->
+        </div>
+  
+        <button data-close-button ="" class = "close-button">
+            &times; <!-- Easier to style this symbol (the 'X'), insead of the actual 'X' character from keyboard-->
+        </button>      
+    </div>
+  
+    <div class="modal2-body">
+      <form action="{{ url_for('views.edit_term', term = term)  }}" method="post">
+  
+        <input type="hidden" name="Title" value="{{ title }}"> <!-- sends the title. useful for database query-->
+        <input type="hidden" name="old_term" value="{{ term }}">
+        <textarea id="user_text_input"  name="new_term" placeholder="{{ term }}"></textarea> 
+      
+        <button id="title_done" class="title-done-button done-button" type="submit">
+          Done    
+        </button>
+      </form>
+    </div>
+  </div>
 {% endfor %}
+
+
+
+
 
 
 <script>

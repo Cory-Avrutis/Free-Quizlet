@@ -124,3 +124,29 @@ def edit_title():
     cards = cardSet['Cards']
 
     return render_template("edit_set.html", user=current_user, cards=cards, title=new_title)
+
+@views.route("/edit_term", methods = ['POST', 'GET'])
+@login_required
+def edit_term():
+    old_term = ""
+    new_term = ""
+    title = ""
+    if request.method == 'POST':
+        title = request.form['Title']
+        old_term = request.form['old_term']
+        new_term = request.form['new_term']
+
+    print("My test\nThe old title retrieved is ", old_term)
+    print("The new title retrieved is ", new_term)
+
+    cardSet = card_sets.find_one( {"User": current_user.get_id(), "Title": title} ) # find set that needs editing
+    cards = cardSet['Cards']
+    
+    # add new card with new ter, use existing definiton
+    card_sets.update_one({"User": current_user.get_id(), "Title": title}, {"$set": {'Cards.' + new_term: cards[old_term]}})
+    card_sets.update_one({"User": current_user.get_id(), "Title": title}, {"$unset": {'Cards.' + old_term: cards[old_term]}})
+
+    cardSet = card_sets.find_one( {"User": current_user.get_id(), "Title": title} ) # find set that needs editing
+    cards = cardSet['Cards']
+    
+    return render_template("edit_set.html", user=current_user, cards=cards, title=title)
