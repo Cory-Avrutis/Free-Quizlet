@@ -371,6 +371,46 @@
 
   {% endfor %}
 
+  <!--
+    Button to add a card
+  -->
+
+  <div class="title-container">
+    <button id="add_card_button" class="title-button" data-modal-target="#modal_add_card">Add a card</button>
+  </div>
+
+  <!--
+    Modal for add a card feature
+  -->
+
+  <div class = "modal2" id="modal_add_card">
+    <form action="{{ url_for('views.new_card', term = term, definition = definition)  }}" method="post">
+      <input type="hidden" name="title" value="{{ title }}"> 
+
+      <div class = "modal2-header">
+          <textarea id="new_term_input"  name="new_term" placeholder="Add a term"></textarea> 
+  
+          <button data-close-button ="" class = "close-button">
+            &times; 
+          </button>      
+      </div>
+    
+      <div class="modal2-body">
+      
+          <textarea id="new_definition_input"  name="new_def" placeholder="Add a definition"></textarea> 
+        
+          <button id="new_card_done" class="title-done-button done-button" type="submit">
+            Done    
+          </button>
+      </div>
+
+    </form>
+  </div>
+
+
+
+
+
   
   <script>
     //code to handle modal interactibility using javascript

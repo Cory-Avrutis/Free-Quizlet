@@ -199,10 +199,43 @@ def edit_definition():
 
      thank you! - Steven
     """
-    
+
     if old_def != new_def:
         card_sets.update_one({"User": current_user.get_id(), "Title": title}, {"$unset": {'Cards.' + term: old_def}})     #gets rid of the previous term and its definition
         card_sets.update_one({"User": current_user.get_id(), "Title": title}, {"$set": {'Cards.' + term: new_def}})       #adds new term, matches it with old definition     
+
+    cardSet = card_sets.find_one( {"User": current_user.get_id(), "Title": title} ) # resets the updates cards to be sent to edit_set.html 
+    cards = cardSet['Cards']
+    
+    return render_template("edit_set.html", user=current_user, cards=cards, title=title)
+
+
+
+@views.route("/new_card", methods = ['POST', 'GET'])
+@login_required
+def new_card():
+
+    title = ""
+    new_term=""
+    new_def=""
+   
+    
+    if request.method == 'POST':
+        title = request.form['title']
+        new_term = request.form['new_term']
+        new_def = request.form['new_def']
+
+    """
+    To Mariela,
+
+    please handle error checking to make sure new definition/new term is not already in the set
+
+     thank you! - Steven
+    """
+    
+    card_sets.update_one(
+        {"User": current_user.get_id(), "Title": title}, 
+        {"$set": {'Cards.' + new_term: new_def}})       #adds new term with its new definition    
 
     cardSet = card_sets.find_one( {"User": current_user.get_id(), "Title": title} ) # resets the updates cards to be sent to edit_set.html 
     cards = cardSet['Cards']
