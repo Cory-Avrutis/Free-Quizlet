@@ -91,6 +91,7 @@
       margin-right: 10px;
     }
 
+   
     .trash-button {
       padding-top: 5px;
       background-color: transparent;
@@ -185,12 +186,21 @@
         resize: none;
     }
 
+    .modal2-body .warning {
+      padding: 10px;
+      font-size: 1.25rem;
+      padding-left: 60px;
+      padding-top: 60px;
+    }
+
+
+
     .modal2-body .done-button {
         position: absolute;     /*ensures the button is on top of the input area*/
         bottom: 10px;
         right: 10px;
         background-color: #39aea9; 
-        border: none;           /*gets rid of that default border from input text area*/
+        border: none;           
         color: white;           
         padding: 10px 20px;
         text-align: center;  
@@ -198,6 +208,22 @@
         display: inline-block; /*basicaly, makes sure the text are within the container and doesn't write/expand outside the modal*/
         font-size: 20px;
     }
+
+    .modal2-body .reject-button {
+      position: absolute;
+      bottom: 10px;
+      right: auto;
+      left: 10px;
+      background-color: green; 
+      border: none;           
+      color: white;           
+      padding: 10px 20px;
+      text-align: center;  
+      text-decoration: none;
+      display: inline-block;
+      font-size: 20px;
+    }
+
 
 
     #overlay    /*overlay is what makes the screen go dim after a modal is surfaced*/
@@ -254,7 +280,7 @@
 
 <div class = "modal2" id="modal_title">
     <div class = "modal2-header">
-        <div class = "title">
+        <div class = "title" >
             Please enter a new title to rename '{{ title[:46] }}...' <!-- shows only first 46 characters -->
         </div>
 
@@ -269,9 +295,14 @@
             <input type="hidden" name="old_title" value="{{ title }}"> <!-- sends the old title. useful for database query-->
 
             <textarea id="user_text_input" class = "modal2-body textarea" name="new_title" placeholder="Enter your text here"></textarea> 
+
+
+            <button id="title_done" class="title-done-button done-button"  type="submit">
+              Yes    
+            </button>
         
-            <button id="title_done" class="title-done-button done-button" type="submit">
-                Done    
+            <button id="title_done" class="title-done-button done-button"  type="submit">
+                Yes    
             </button>
         </form>
     </div>
@@ -289,9 +320,13 @@
 
   <div class="flashcard-row">
     <div class="flashcard-row-join">
+
       <div class="trash-button">
-        <button><p>&#128465;</p></button>
+        <button class="remove-button" data-modal-target="#modal_REMOVE_{{  loop.index  }}">
+          <p>&#128465;</p>
+        </button>
       </div>
+
       <div class="flashcard-term">
         <div class="flashcard-center">  
             <h2><button class="term-button" data-modal-target="#modal_TERM_{{  loop.index  }}">{{term}}</button></h2> 
@@ -305,6 +340,39 @@
       </div>
     </div>
   </div>
+
+
+  <!--
+    Modal for remove a card feature
+  -->
+
+  <div class = "modal2" id="modal_REMOVE_{{  loop.index  }}">
+
+    <div class = "modal2-header" style="color:rgb(255, 183, 0);">
+        <div class = "title" >
+          Are you sure you want to remove this card?
+        </div>
+  
+        <button data-close-button ="" class = "close-button">
+          &times; 
+        </button>      
+    </div>
+
+    <div class="modal2-body">
+
+      <p class = "warning" >
+        WARNING: This action cannot be undone.
+      </p>
+
+      <button class="reject-button">Do NOT delete</button>      
+      <button class="done-button" style="background-color: red;" >Delete it</button>
+  
+    </div>
+    
+  </div>
+
+  
+
 
   <!--
     Modal for flash card term input
