@@ -192,13 +192,7 @@ def edit_definition():
         old_def = request.form['old_def']
         new_def = request.form['new_def']
 
-    """
-    To Mariela,
-
-    please also handle error checking to make sure new definition is not already a definition in the set
-
-     thank you! - Steven
-    """
+    
 
     if old_def != new_def:
         card_sets.update_one({"User": current_user.get_id(), "Title": title}, {"$unset": {'Cards.' + term: old_def}})     #gets rid of the previous term and its definition
