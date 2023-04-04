@@ -30,15 +30,16 @@
 </head>
 
 <!-- Form for selecting a set to study (sends POST) -->
-<form action = "{{ url_for('views.select_set') }}" method="POST" >
+<form method="POST" >
 
     <h2 align="center">Select a Set to Study</h2>
     
     <!-- show all available sets if any -->
     <div class="buttons">
-    {% for set in userSets %}
+    {% for s in userSets %}
         <div class="set-button">
-                <input type = "submit" class="btn btn-dark set-button" value = "{{set['Title']}}" name = "title"  />
+            <button type = "submit" class="btn btn-dark set-button" value = "{{ s['Title'] }},{{ s['User']}}" name = "info">
+            {{ s['Title']}}</button>
         </div>
     {% endfor %}
     </div>

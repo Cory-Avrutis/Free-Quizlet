@@ -41,17 +41,18 @@ def username_exists(usr):
         return True
     return False
 
-# return username given the email
-def get_username(email):
-    usr = users.find_one({"email" : email})
-    return usr["username"]
-
 # returns encrypted password for usr from db
 def get_password(usr):
     if users.find_one({"username" : usr}):
         user = users.find_one({"username" : usr})
         return user["password"]
-    
+    return None
+
+def set_exists(user:str, title:str):
+    if card_sets.find_one({'User' : user, 'Title' : title}):
+        return True
+    return False
+
 # inserts a new record into card_sets collection    
 def insert_new_card_set(cards : dict, title : str, usr : str,):
     rec = {
@@ -60,7 +61,37 @@ def insert_new_card_set(cards : dict, title : str, usr : str,):
         "User" : usr
     }
     card_sets.insert_one(rec)
-    
+
+# return all card_sets based on a privilege level
+def get_sets_by_privs(priv:str):
+    if priv == 'admin':
+        return [x for x in card_sets.find()]
+    elif priv == 'mod':
+        return [x for x in card_sets.find() if users.find_one({"username" : x['User']})['privs'] != 'admin']
+    else:
+        return [x for x in card_sets.find() if users.find_one({"username" : x['User']})['privs'] == 'user']
+            
+# return sets for User and Title
+def get_set_by_user_title(usr:str, title:str):
+    return [x for x in card_sets.find({'User' : usr}) \
+              if x['Title'] == title][0]
+
+# return all card_sets based on a username
+def get_sets_by_user(usr:str):
+    return card_sets.find({'User' : usr})
+
+# search sets by Title
+def get_sets_by_title(title:str):
+    return card_sets.find({'Title' : title})
+
+
+# update set with given Title and User
+def update_title(user:str, old_title:str, new_title:str):
+    card_sets.update_one( 
+        {"User": user, "Title": old_title}, #query to extract which title
+        {"$set": {"Title": new_title}}      #query to update the title
+    ) 
+
 
 # To create a collection in db
 # newColl = db["new_coll_name"]
