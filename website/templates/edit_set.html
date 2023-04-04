@@ -80,8 +80,8 @@
 
     /* style for the title button. we'll also use this for add a card button */
     .title-button {
-      background-color: #39aea9;
-      border: none;
+      background-color: white;
+      border: #557b83 solid 2px;
       color: black;
       padding: 10px 20px;
       text-align: center;
@@ -95,6 +95,7 @@
     .trash-button {
       padding-top: 5px;
       background-color: transparent;
+      border: none;
       align-self: center;
       font-size: 25px;
       margin-left: 5px;
@@ -224,7 +225,7 @@
       bottom: 10px;
       right: auto;
       left: 10px;
-      background-color: green; 
+      background-color: #26d701; 
       border: none;           
       color: white;           
       padding: 10px 20px;
@@ -332,7 +333,7 @@
     <div class="flashcard-row-join">
 
       <div class="trash-button">
-        <button class="remove-button" data-modal-target="#modal_REMOVE_{{  loop.index  }}">
+        <button class="remove-button trash-button" data-modal-target="#modal_REMOVE_{{  loop.index  }}">
           <p>&#128465;</p>
         </button>
       </div>
@@ -381,7 +382,7 @@
         <input type="hidden" name="old_term" value="{{ term }}">
         <input type="hidden" name="old_def" value="{{ cards[term] }}">
         
-        <button class="done-button" style="background-color: red;" >Delete it</button>
+        <button class="done-button" style="background-color: #ff2e2e;" >Delete it</button>
       </form>
       
   
@@ -429,7 +430,7 @@
   <div class = "modal2" id="modal_DEFINITION_{{  loop.index  }}">
     <div class = "modal2-header">
         <div class = "def">
-          Please enter a new term to rename '{{ cards[term] }}' 
+          Please enter a new definiton to replace '{{ cards[term] }}' 
         </div>
   
         <button data-close-button ="" class = "close-button">

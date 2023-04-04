@@ -104,7 +104,6 @@ def edit_term():
     title = ""
     old_term = ""
     new_term = ""
-    
     if request.method == 'POST':
         title = request.form['title']
         old_term = request.form['old_term']
@@ -139,12 +138,16 @@ def edit_term():
         - Steven
     """
 
-    if old_term != new_term:
-
-        # add new card with new ter, use existing definiton
+    if old_term == new_term:
+        flash('Unable to edit term. No change detected.', category='error')
+    elif new_term in cards:
+        flash('Term already exists in the set.', category='error')
+    else:
+        # add new card with new term, use existing definiton
         card_sets.update_one({"User": current_user.get_id(), "Title": title}, {"$set": {'Cards.' + new_term: cards[old_term]}})     #adds new term, matches it with old definition
         card_sets.update_one({"User": current_user.get_id(), "Title": title}, {"$unset": {'Cards.' + old_term: cards[old_term]}})   #gets rid of the previous term and its definition
     
+    # updated cardset to show when screen reloads
     cardSet = card_sets.find_one( {"User": current_user.get_id(), "Title": title} ) # finds the updated cards to be sent to edit_set.html 
     cards = cardSet['Cards']
     
@@ -166,9 +169,16 @@ def edit_definition():
         old_def = request.form['old_def']
         new_def = request.form['new_def']
 
-    
 
-    if old_def != new_def:
+    # updated cardset to show when screen reloads
+    cardSet = card_sets.find_one( {"User": current_user.get_id(), "Title": title} ) # finds the updated cards to be sent to edit_set.html 
+    cards = cardSet['Cards']
+
+    if old_def != new_def and new_def in cards.values():
+        flash('Warning: Existing term has same definition', category='warning')
+    if old_def == new_def:
+        flash('Unable to edit definition. No change detected.', category='error')
+    else:
         card_sets.update_one({"User": current_user.get_id(), "Title": title}, {"$unset": {'Cards.' + term: old_def}})     #gets rid of the previous term and its definition
         card_sets.update_one({"User": current_user.get_id(), "Title": title}, {"$set": {'Cards.' + term: new_def}})       #adds new term, matches it with old definition     
 
@@ -176,8 +186,6 @@ def edit_definition():
     cards = cardSet['Cards']
     
     return render_template("edit_set.html", user=current_user, cards=cards, title=title)
-
-
 
 @views.route("/new_card", methods = ['POST', 'GET'])
 @login_required
@@ -201,8 +209,12 @@ def new_card():
      thank you! - Steven
     """
 
-    if new_term != "" and new_def != "":    #only neccessary for add a card because i wrapped the form around both inputs. if they click out, flow goes here so must error check
-    
+    if new_term in cards:
+        flash('Unable to add. Term already exists in the set.', category='error')
+    if new_def in cards.values():
+        flash('Warning: Existing term has same definition', category='warning')
+
+    if new_term != "" and new_def != "" and new_term not in cards:    #only neccessary for add a card because i wrapped the form around both inputs. if they click out, flow goes here so must error check
         card_sets.update_one(
             {"User": current_user.get_id(), "Title": title}, 
             {"$set": {'Cards.' + new_term: new_def}})       #adds new term with its new definition    
