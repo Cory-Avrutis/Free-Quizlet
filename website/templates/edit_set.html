@@ -159,6 +159,15 @@
         font-weight: bold;
     }
 
+    .modal2-header textarea {
+        /* edited the modal educational video code to include input*/
+        flex: 1;    /*shoves the modal2-body textArea to fit the entire modal2-header area*/
+        border: none;
+        outline: none;
+        font-size: 16px;
+        resize: none;
+    }
+
     .modal2-header .close-button {
         cursor: pointer;
         border: none;
@@ -210,6 +219,7 @@
     }
 
     .modal2-body .reject-button {
+      cursor: pointer;
       position: absolute;
       bottom: 10px;
       right: auto;
@@ -364,14 +374,20 @@
         WARNING: This action cannot be undone.
       </p>
 
-      <button class="reject-button">Do NOT delete</button>      
-      <button class="done-button" style="background-color: red;" >Delete it</button>
+      <button data-reject-button class="reject-button">Do NOT delete</button>
+      
+      <form action="{{ url_for('views.delete_card', term = new_term, definition = new_def)  }}" method="post">
+        <input type="hidden" name="title" value="{{ title }}">
+        <input type="hidden" name="old_term" value="{{ term }}">
+        <input type="hidden" name="old_def" value="{{ cards[term] }}">
+        
+        <button class="done-button" style="background-color: red;" >Delete it</button>
+      </form>
+      
   
     </div>
     
   </div>
-
-  
 
 
   <!--
@@ -452,9 +468,7 @@
   -->
 
   <div class = "modal2" id="modal_add_card">
-    <form action="{{ url_for('views.new_card', term = term, definition = definition)  }}" method="post">
-      <input type="hidden" name="title" value="{{ title }}"> 
-
+   
       <div class = "modal2-header">
           <textarea id="new_term_input"  name="new_term" placeholder="Add a term"></textarea> 
   
@@ -466,13 +480,18 @@
       <div class="modal2-body">
       
           <textarea id="new_definition_input"  name="new_def" placeholder="Add a definition"></textarea> 
-        
-          <button id="new_card_done" class="title-done-button done-button" type="submit">
-            Done    
-          </button>
+
+
+          <form action="{{ url_for('views.new_card', term = new_term, definition = new_def)  }}" method="post">
+            <input type="hidden" name="title" value="{{ title }}"> 
+
+            <button id="new_card_done" class="title-done-button done-button" type="submit">
+              Done    
+            </button>
+          </form>
       </div>
 
-    </form>
+    
   </div>
 
 
@@ -483,17 +502,13 @@
   <script>
     //code to handle modal interactibility using javascript
 
-
     const openModalButtons = document.querySelectorAll('[data-modal-target]')   //lets us grab HTML elements using a css selector (the parameter)
-    const closeModalButtons = document.querySelectorAll('[data-close-button]')  //and returns all elements in the document that match the selector as a NodeList object
-
-
+    const closeModalButtons = document.querySelectorAll('[data-close-button], [data-reject-button]')  //and returns all elements in the document that match the selector as a NodeList object
     const overlay = document.getElementById('overlay') //similiar to querySelectorAll. it just grabs a specified element by id from the document 
 
     openModalButtons.forEach(button =>{ //so querySelectorAll returned a list of NodeList objects. now we iterate through all of them with forEach
         button.addEventListener('click', () =>{     //and we add an eventListener to them .
 
-            console.log('Hello!')
             const modal = document.querySelector(button.dataset.modalTarget)    //when they click, we extract the modal information
             openModal(modal)                                                    //and open (present to user) it
         })
@@ -507,6 +522,7 @@
         })
     })
 
+  
     overlay.addEventListener('click', ()=>{     //in addition to the x button closing the modal, this func lets users click outside of modal to close 
         const Modals = document.querySelectorAll('.modal2.active')
         Modals.forEach(modal =>{
@@ -530,4 +546,3 @@
   </script>
 
 {% endblock %}
-

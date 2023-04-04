@@ -151,16 +151,16 @@ def edit_term():
 
     """
     some discoveries on above
-    1) updated term being the same as its old term leads to the card being deleted (handled with if old_term != new_term)
+    1) updated term being the same as its old term leads to the card being deleted 
+        (handled with if old_term != new_term)
 
     2) updated term being the same as another term already in the set leads to undefined behavior. 
      usually deletes both old and other shared card with same term, sometimes does nothing, and rarely will fatally crash website
        (for Mariela to do. i assume something like if new term is not in cards_terms. put it with the if condition below)
 
 
-
     3) not a dangeorus bug. when a card is updated, it is appended at the end of the data structure. this reorders it differently when edit_set renders
-        could be fixed. could also be left as is
+        (could be fixed. could also be left as is)
 
         - Steven
     """
@@ -198,7 +198,7 @@ def edit_definition():
         card_sets.update_one({"User": current_user.get_id(), "Title": title}, {"$unset": {'Cards.' + term: old_def}})     #gets rid of the previous term and its definition
         card_sets.update_one({"User": current_user.get_id(), "Title": title}, {"$set": {'Cards.' + term: new_def}})       #adds new term, matches it with old definition     
 
-    cardSet = card_sets.find_one( {"User": current_user.get_id(), "Title": title} ) # resets the updates cards to be sent to edit_set.html 
+    cardSet = card_sets.find_one( {"User": current_user.get_id(), "Title": title} ) # resets the updated cards to be sent to edit_set.html 
     cards = cardSet['Cards']
     
     return render_template("edit_set.html", user=current_user, cards=cards, title=title)
@@ -222,16 +222,52 @@ def new_card():
     """
     To Mariela,
 
-    please handle error checking again to make sure new term is not already in the set
+    please handle error checking again to make sure new term (updated term) is not already in the set
 
      thank you! - Steven
     """
+
+    if new_term != "" and new_def != "":    #only neccessary for add a card because i wrapped the form around both inputs. if they click out, flow goes here so must error check
     
+        card_sets.update_one(
+            {"User": current_user.get_id(), "Title": title}, 
+            {"$set": {'Cards.' + new_term: new_def}})       #adds new term with its new definition    
+
+    cardSet = card_sets.find_one( {"User": current_user.get_id(), "Title": title} ) # resets the updated cards to be sent to edit_set.html 
+    cards = cardSet['Cards']
+    
+    return render_template("edit_set.html", user=current_user, cards=cards, title=title)
+
+
+@views.route("/delete_card", methods = ['POST', 'GET'])
+@login_required
+def delete_card():
+
+    title = ""
+    _term=""
+    _def=""
+   
+    
+    if request.method == 'POST':
+        title = request.form['title']
+        _term = request.form['old_term']
+        _def = request.form['old_def']
+
+    """
+    To Mariela,
+        No error handling requried here :-)
+    - Steven
+    """
+
+    #you would think it's delete_one that we want to call. but that would get rid of the entire set.
+    # so we just do unset, which removes the term and its definition from the set instead.   
+
     card_sets.update_one(
         {"User": current_user.get_id(), "Title": title}, 
-        {"$set": {'Cards.' + new_term: new_def}})       #adds new term with its new definition    
+        {"$unset": {'Cards.' + _term: _def  }}) 
 
-    cardSet = card_sets.find_one( {"User": current_user.get_id(), "Title": title} ) # resets the updates cards to be sent to edit_set.html 
+    
+    cardSet = card_sets.find_one( {"User": current_user.get_id(), "Title": title} ) # resets the updated cards to be sent to edit_set.html 
     cards = cardSet['Cards']
     
     return render_template("edit_set.html", user=current_user, cards=cards, title=title)
