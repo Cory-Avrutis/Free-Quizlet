@@ -274,16 +274,12 @@
 </div>
 
 
-
-
-
 <div id="overlay"></div>
 
-
 <!-- create a flashcard for every card in the set -->
+
+
 {% for term in cards %}
-
-
 
   <div class="flashcard-row">
     <div class="flashcard-row-join">
@@ -292,7 +288,7 @@
       </div>
       <div class="flashcard-term">
         <div class="flashcard-center">  
-            <h2><button class="term-button" data-modal-target="#modal_term">{{term}}</button></h2> 
+            <h2><button class="term-button" data-modal-target="#modal_TERM_{{  loop.index  }}">{{term}}</button></h2> 
         </div>
       </div>
       <div class="flashcard-def">
@@ -303,23 +299,24 @@
     </div>
   </div>
 
-  <div class = "modal2" id="modal_term">
+  <div class = "modal2" id="modal_TERM_{{  loop.index  }}">
     <div class = "modal2-header">
         <div class = "term">
-            Please enter a new term to rename '{{ term }}' <!-- shows only first 46 characters -->
+          Please enter a new term to rename '{{ term }}' 
         </div>
   
         <button data-close-button ="" class = "close-button">
-            &times; <!-- Easier to style this symbol (the 'X'), insead of the actual 'X' character from keyboard-->
+          &times; 
         </button>      
     </div>
   
     <div class="modal2-body">
       <form action="{{ url_for('views.edit_term', term = term)  }}" method="post">
   
-        <input type="hidden" name="Title" value="{{ title }}"> <!-- sends the title. useful for database query-->
-        <input type="hidden" name="old_term" value="{{ term }}">
-        <textarea id="user_text_input"  name="new_term" placeholder="{{ term }}"></textarea> 
+        <input type="hidden" name="title" value="{{ title }}"> 
+        <input type="hidden" name="old_term" value="{{ term }}"> 
+
+        <textarea id="user_term_input"  name="new_term" placeholder="{{ term }}"></textarea> 
       
         <button id="title_done" class="title-done-button done-button" type="submit">
           Done    
@@ -327,7 +324,13 @@
       </form>
     </div>
   </div>
-{% endfor %}
+
+  {% endfor %}
+
+  
+
+
+
 
 
 
@@ -346,6 +349,8 @@
 
     openModalButtons.forEach(button =>{ //so querySelectorAll returned a list of NodeList objects. now we iterate through all of them with forEach
         button.addEventListener('click', () =>{     //and we add an eventListener to them .
+
+            console.log('Hello!')
             const modal = document.querySelector(button.dataset.modalTarget)    //when they click, we extract the modal information
             openModal(modal)                                                    //and open (present to user) it
         })

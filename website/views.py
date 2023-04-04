@@ -128,11 +128,13 @@ def edit_title():
 @views.route("/edit_term", methods = ['POST', 'GET'])
 @login_required
 def edit_term():
+
+    title = ""
     old_term = ""
     new_term = ""
-    title = ""
+    
     if request.method == 'POST':
-        title = request.form['Title']
+        title = request.form['title']
         old_term = request.form['old_term']
         new_term = request.form['new_term']
 
@@ -143,10 +145,17 @@ def edit_term():
     cards = cardSet['Cards']
     
     # add new card with new ter, use existing definiton
-    card_sets.update_one({"User": current_user.get_id(), "Title": title}, {"$set": {'Cards.' + new_term: cards[old_term]}})
-    card_sets.update_one({"User": current_user.get_id(), "Title": title}, {"$unset": {'Cards.' + old_term: cards[old_term]}})
 
-    cardSet = card_sets.find_one( {"User": current_user.get_id(), "Title": title} ) # find set that needs editing
+    card_sets.update_one({"User": current_user.get_id(), "Title": title}, {"$set": {'Cards.' + new_term: cards[old_term]}}) #adds new term, matches it with old definition
+
+    #To Mariela, 
+    #what happens in the line above if the new term is a term that already exists? 
+    #do we need to add error handling, is it an automatic reject by Mongo, or does it not even matter? 
+    # - Steven
+
+    card_sets.update_one({"User": current_user.get_id(), "Title": title}, {"$unset": {'Cards.' + old_term: cards[old_term]}}) #gets rid of the previous term and its definition
+
+    cardSet = card_sets.find_one( {"User": current_user.get_id(), "Title": title} ) # resets the updates cards to be sent to edit_set.html 
     cards = cardSet['Cards']
     
     return render_template("edit_set.html", user=current_user, cards=cards, title=title)
