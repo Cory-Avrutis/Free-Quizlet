@@ -222,7 +222,7 @@ def new_card():
     """
     To Mariela,
 
-    please handle error checking to make sure new definition/new term is not already in the set
+    please handle error checking again to make sure new term is not already in the set
 
      thank you! - Steven
     """
