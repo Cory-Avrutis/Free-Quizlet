@@ -306,8 +306,7 @@
             <input type="hidden" name="old_title" value="{{ title }}"> <!-- sends the old title. useful for database query-->
 
             <textarea id="user_text_input" class = "modal2-body textarea" name="new_title" placeholder="Enter your text here"></textarea> 
-
-
+    
             <button id="title_done" class="title-done-button done-button"  type="submit">
               Yes    
             </button>
@@ -483,23 +482,45 @@
           <textarea id="new_definition_input"  name="new_def" placeholder="Add a definition"></textarea> 
 
 
-          <form action="{{ url_for('views.new_card', term = new_term, definition = new_def)  }}" method="post">
+          <form action="{{ url_for('views.new_card')  }}" method="post" id = "add_card_form">
             <input type="hidden" name="title" value="{{ title }}"> 
+            <input type="hidden" name="new_term" value="" id="new_term_input_hidden"> 
+            <input type="hidden" name="new_def" value="" id="new_definition_input_hidden"> 
 
             <button id="new_card_done" class="title-done-button done-button" type="submit">
               Done    
             </button>
           </form>
       </div>
-
-    
   </div>
 
+  <script>
+    //javascript code to upload hidden information to the form, specifically for add a card modal, when submit is hit
+
+    const newTermInput = document.getElementById('new_term_input');
+    const newDefinitionInput = document.getElementById('new_definition_input');
+
+    const newTermInputHidden = document.getElementById('new_term_input_hidden');
+    const newDefinitionInputHidden = document.getElementById('new_definition_input_hidden');
+
+    const addCardForm = document.getElementById('add_card_form');
+
+    addCardForm.addEventListener('submit', (event) => {   //"when computer hears 'submit', do the following"
+      newTermInputHidden.value = newTermInput.value;      //use the value from inputs gathered earlier
+      newDefinitionInputHidden.value = newDefinitionInput.value;  //and set them
+    });
+
+    //the reason the add a card modal needs this in particular is because of where i put the form code
+
+    //instead of wrapping the header and body in the form code, i only wrapped the body.
+    //this is slightly better specifically for add a card as previously, when user clicked out or clicked x, it would submit whatever was on there
+    //(that's how a form wrapping both components work)
+
+    //so now, the form code is only being wrapped around on the done button. so it can only submit itself if and only if the user hit 'Done'
+
+  </script>
 
 
-
-
-  
   <script>
     //code to handle modal interactibility using javascript
 
