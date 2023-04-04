@@ -44,6 +44,7 @@
       height: 100%;
       background-color: white;
       color: #000000;
+      
       overflow: hidden;
       text-overflow: ellipsis;
     } 
@@ -100,6 +101,11 @@
     }
 
     .term-button {
+      border: none;
+      background: transparent;
+    }
+
+    .definition-button {
       border: none;
       background: transparent;
     }
@@ -291,15 +297,20 @@
             <h2><button class="term-button" data-modal-target="#modal_TERM_{{  loop.index  }}">{{term}}</button></h2> 
         </div>
       </div>
+
       <div class="flashcard-def">
         <div class="flashcard-center">
-          <p>{{cards[term]}}</p>
+          <h2><button class="definition-button" data-modal-target="#modal_DEFINITION_{{  loop.index  }}">{{cards[term]}}</button></h2>
         </div>
       </div>
     </div>
   </div>
 
+  <!--
+    Modal for flash card term input
+  -->
   <div class = "modal2" id="modal_TERM_{{  loop.index  }}">
+
     <div class = "modal2-header">
         <div class = "term">
           Please enter a new term to rename '{{ term }}' 
@@ -325,19 +336,43 @@
     </div>
   </div>
 
+
+    
+  <!--
+    Modal for flash card definition input
+  -->
+
+  <div class = "modal2" id="modal_DEFINITION_{{  loop.index  }}">
+    <div class = "modal2-header">
+        <div class = "def">
+          Please enter a new term to rename '{{ cards[term] }}' 
+        </div>
+  
+        <button data-close-button ="" class = "close-button">
+          &times; 
+        </button>      
+    </div>
+  
+    <div class="modal2-body">
+      <form action="{{ url_for('views.edit_definition', definition = definition)  }}" method="post">
+        <input type="hidden" name="title" value="{{ title }}"> 
+        <input type="hidden" name="term" value="{{ term }}"> 
+        <input type ="hidden" name="old_def" value ="{{ cards[term] }}">
+
+        <textarea id="user_definition_input"  name="new_def" placeholder="{{ cards[term] }}"></textarea> 
+      
+        <button id="definition_done" class="title-done-button done-button" type="submit">
+          Done    
+        </button>
+      </form>
+    </div>
+  </div>
+
+
   {% endfor %}
 
   
-
-
-
-
-
-
-
-
-
-<script>
+  <script>
     //code to handle modal interactibility using javascript
 
 
@@ -384,7 +419,7 @@
         modal.classList.remove('active')    //the negation logic of above
         overlay.classList.remove('active')  //if it's no longer active, make the rest of the screen normal
     }
-</script>
+  </script>
 
 {% endblock %}
 
