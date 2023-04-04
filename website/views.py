@@ -209,6 +209,9 @@ def new_card():
      thank you! - Steven
     """
 
+    cardSet = card_sets.find_one( {"User": current_user.get_id(), "Title": title} ) # resets the updated cards to be sent to edit_set.html 
+    cards = cardSet['Cards']
+    
     if new_term in cards:
         flash('Unable to add. Term already exists in the set.', category='error')
     if new_def in cards.values():
