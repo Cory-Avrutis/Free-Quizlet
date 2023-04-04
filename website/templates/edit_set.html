@@ -305,8 +305,7 @@
             <input type="hidden" name="old_title" value="{{ title }}"> <!-- sends the old title. useful for database query-->
 
             <textarea id="user_text_input" class = "modal2-body textarea" name="new_title" placeholder="Enter your text here"></textarea> 
-
-
+    
             <button id="title_done" class="title-done-button done-button"  type="submit">
               Yes    
             </button>
@@ -482,8 +481,12 @@
           <textarea id="new_definition_input"  name="new_def" placeholder="Add a definition"></textarea> 
 
 
-          <form action="{{ url_for('views.new_card', term = new_term, definition = new_def)  }}" method="post">
+          <form action="{{ url_for('views.new_card')  }}" method="post">
             <input type="hidden" name="title" value="{{ title }}"> 
+
+            <input type="hidden" name="new_term" value="{{ new_term }}"> 
+
+            <input type="hidden" name="new_def" value="{{ new_def }}"> 
 
             <button id="new_card_done" class="title-done-button done-button" type="submit">
               Done    
