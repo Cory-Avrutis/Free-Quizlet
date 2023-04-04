@@ -201,11 +201,14 @@ def new_card():
      thank you! - Steven
     """
 
-    if new_term != "" and new_def != "":    #only neccessary for add a card because i wrapped the form around both inputs. if they click out, flow goes here so must error check
+    print("The title is ", title)
+
+    print("The new term is ", new_term)
+    print("The new definition is ", new_def)
     
-        card_sets.update_one(
-            {"User": current_user.get_id(), "Title": title}, 
-            {"$set": {'Cards.' + new_term: new_def}})       #adds new term with its new definition    
+    card_sets.update_one(
+        {"User": current_user.get_id(), "Title": title}, 
+        {"$set": {'Cards.' + new_term: new_def}})       #adds new term with its new definition    
 
     cardSet = card_sets.find_one( {"User": current_user.get_id(), "Title": title} ) # resets the updated cards to be sent to edit_set.html 
     cards = cardSet['Cards']
