@@ -70,18 +70,14 @@ def view_sets():
 # called when clicks on 'Edit a Set' on home.html 
 @views.route("/edit_set", methods = ['POST', 'GET'])
 @login_required
-def select_set_2_edit():
-    # admins can edit any set in existence(NEXXTTTT)
+def edit_sets():
+    if request.method == 'POST':
+        title = request.form['title']
+        cards = card_sets.find_one({"User": current_user.get_id(), "Title": title})['Cards']
+        return render_template("edit_set.html", user=current_user, cards=cards, title=title)
+    # admins can edit any set in existence(NEXT)
     userSets = get_sets_by_user(current_user.get_id())
     return render_template("view_sets_2_edit.html", user=current_user, userSets = userSets)
-
-# called when user selects set to Edit on view_sets_2_edit.html
-@views.route("modify_set", methods = ['POST'])
-@login_required
-def edit():
-    title = request.form['title']
-    cards = card_sets.find_one({"User": current_user.get_id(), "Title": title})['Cards']
-    return render_template("edit_set.html", user=current_user, cards=cards, title=title)
 
 # called when user clicks title to edit on edit_set.html
 @views.route("/edit_title", methods = ['POST'])
@@ -89,22 +85,14 @@ def edit():
 def edit_title():
     old_title = request.form['old_title']
     new_title = request.form['new_title'].strip()
-    f_title = old_title
+    f_title = old_title     # final title (for page re-rendering)
  
     if new_title == '': 
         flash('Title for set is blank', category='error')
     elif set_exists(current_user.get_id(), new_title):
         flash('You already have a set with this title.', category='error')
     else:
+        f_title = new_title
         update_title(current_user.get_id(), old_title, new_title)
-    #card_sets.update_one( 
-    #    {"User": current_user.get_id(), "Title": old_title}, #query to extract which title
-    #    {"$set": {"Title": new_title}}                       #query to update the title
-    #    ) 
-
-    
-    #cardSet = card_sets.find_one( {"User": current_user.get_id(), "Title": new_title} ) #reset new parameters (cards) for edit_set to render
     cards = get_set_by_user_title(current_user.get_id(), f_title)['Cards']
-    #cards = cardSet['Cards']
-
-    return render_template("edit_set.html", user=current_user, cards=cards, title=new_title)
+    return render_template("edit_set.html", user=current_user, cards=cards, title=f_title)
