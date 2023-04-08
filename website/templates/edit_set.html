@@ -90,7 +90,6 @@
       font-size: 20px;
       margin-right: 10px;
     }
-
    
     .trash-button {
       padding-top: 5px;
@@ -307,6 +306,7 @@
         <form action="{{ url_for('views.edit_title', title= title)  }}" method="post">
 
             <input type="hidden" name="old_title" value="{{ title }}"> <!-- sends the old title. useful for database query-->
+            <input type="hidden" name="set_owner" value="{{ set_owner }}"> <!-- transfers original owner for this set -->
 
             <textarea id="user_text_input" class = "modal2-body textarea" name="new_title" placeholder="Enter your text here"></textarea> 
     
@@ -383,6 +383,7 @@
         <input type="hidden" name="title" value="{{ title }}">
         <input type="hidden" name="old_term" value="{{ term }}">
         <input type="hidden" name="old_def" value="{{ cards[term] }}">
+        <input type="hidden" name="set_owner" value="{{ set_owner }}"> <!-- transfers original owner for this set -->
         
         <button class="done-button" style="background-color: #ff2e2e;" >Delete it</button>
       </form>
@@ -410,19 +411,18 @@
   
     <div class="modal2-body">
       <form action="{{ url_for('views.edit_term', term = term)  }}" method="post">
-  
+ 
+        <input type="hidden" name="set_owner" value="{{ set_owner }}"> <!-- transfers original owner for this set -->
         <input type="hidden" name="title" value="{{ title }}"> 
         <input type="hidden" name="old_term" value="{{ term }}"> 
-
         <textarea id="user_term_input"  name="new_term" placeholder="{{ term }}"></textarea> 
-      
+
         <button id="title_done" class="title-done-button done-button" type="submit">
           Done    
         </button>
       </form>
     </div>
   </div>
-
 
     
   <!--
@@ -444,7 +444,9 @@
       <form action="{{ url_for('views.edit_definition', definition = definition)  }}" method="post">
         <input type="hidden" name="title" value="{{ title }}"> 
         <input type="hidden" name="term" value="{{ term }}"> 
+        <input type="hidden" name="set_owner" value="{{ set_owner }}"> <!-- transfers original owner for this set -->
         <input type ="hidden" name="old_def" value ="{{ cards[term] }}">
+
 
         <textarea id="user_definition_input"  name="new_def" placeholder="{{ cards[term] }}"></textarea> 
       
@@ -489,6 +491,7 @@
             <input type="hidden" name="title" value="{{ title }}"> 
             <input type="hidden" name="new_term" value="" id="new_term_input_hidden"> 
             <input type="hidden" name="new_def" value="" id="new_definition_input_hidden"> 
+            <input type="hidden" name="set_owner" value="{{ set_owner }}"> <!-- transfers original owner for this set -->
 
             <button id="new_card_done" class="title-done-button done-button" type="submit">
               Done    
