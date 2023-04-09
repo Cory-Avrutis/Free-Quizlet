@@ -59,9 +59,14 @@ def create_set():
 def view_sets():
     # POST  - triggered when user selects a set to view
     if request.method == 'POST':
+        mode = request.args.get("id")
         title,set_owner = request.form['info'].split(',')
         cards = get_set_by_user_title(set_owner, title)['Cards']
-        return render_template("show_set.html", user=current_user, cards=cards, title=title)
+        if mode == "flashcard":
+            return render_template("show_set.html", user=current_user, cards=cards, title=title)
+        elif mode == "quiz":
+            return render_template("quiz_set.html", user=current_user, cards=cards, title=title)
+        # return render_template("show_set.html", user=current_user, cards=cards, title=title)
 
     # GET - by default, displays all sets for viewing
     userSets = get_sets_by_privs('admin') 

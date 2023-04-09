@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}Quiz Study Set{% endblock %}
+
+{% block content %}
+
+<!-- need this to add css to just this page for the flashcard -->
+<head>
+  <style>
+    .question-card {
+        margin: auto;
+        align-content: center;
+        text-align: center;
+        /* min-width: 500px; */
+        max-width: 500px;
+        min-height: 400px;
+        border: black solid 1px;
+        box-shadow: 5px 5px lightblue;
+        border-radius: 20px;
+    }
+    .question-number {
+        text-align: center;
+        height: 50px;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        margin: auto;
+    }
+  </style>
+</head>
+
+
+<h2 align="center">{{title}}</h2>
+<h2>quiz mode</h2>
+
+<div class ="question-card">
+    <h3 class="question-number">Tutorial Question</h3>
+    <h4 class="question">Term</h4>
+    <div class = "answers">
+        <button>choice A</button>
+        <button>choice B</button>
+        <button>choice C</button>
+        <button>choice D</button>
+    </div>
+</div>
+
+<!-- create a flashcard for every card in the set -->
+{% for term in cards %}
+
+    <!-- <input type="hidden" id="term" name="variable" value="{{ term }}"> -->
+    <input type="hidden" id="cards" name="variable" value="{{ cards }}">
+    <button type="button" class="btn btn-secondary"  id="quiz_button_{{  loop.index  }}" onclick="getQuestion('{{ term }}')">generate quiz</button>
+    <h2>{{term}}</h2>
+   
+    <p>{{cards[term]}}</p>
+
+
+       
+{% endfor %}
+
+<script>
+
+    
+    // for(var key in parsed) {
+    //     var value = parsed[key];
+    //     console.log(value)
+    //     // do something with "key" and "value" variables
+    // }
+    
+    
+    // used for switch to generate a question with a random answer
+    function getRandomChoice(){
+        // returns a random int 0-4 (4 answer choices, (0, 4])
+        return Math.floor(Math.random() * 4);
+    }
+
+    // used to get a random definition
+    function getRandomDef(cards, def){
+        // returns a random int 0-length
+        var length = Object.keys(cards).length
+        var values = getValues(cards)
+        var randInt = Math.floor(Math.random() * length);
+        while (def == values[randInt])
+        {
+            randInt = Math.floor(Math.random() * length);
+        }
+        return randInt;
+    }
+
+    function getAnswer(cards, term){
+        
+        return cards[term];
+    }
+
+    function generateQuestionAns(cards, term){
+        var randChoice = getRandomChoice()
+        console.log(cards)
+        var values = getValues(cards)
+        switch(randChoice){
+            case 0: console.log("a");
+                var def = cards[term]
+                question = {question: term, choiceA: def, choiceB: values[getRandomDef(cards, def)], choiceC: values[getRandomDef(cards, def)], choiceD: values[getRandomDef(cards, def)], answer: "a"};
+                console.log(question)
+                break;
+            case 1: console.log("b");
+                var def = cards[term]
+                question = {question: term, choiceA: values[getRandomDef(cards, def)], choiceB: def, choiceC: values[getRandomDef(cards, def)], choiceD: values[getRandomDef(cards, def)], answer: "b"};
+                console.log(question)
+                break;
+            case 2: console.log("c");
+                var def = cards[term]
+                question = {question: term, choiceA: values[getRandomDef(cards, def)], choiceB: values[getRandomDef(cards, def)], choiceC: def, choiceD: values[getRandomDef(cards, def)], answer: "c"};
+                console.log(question)
+                break;
+            case 3: console.log("d");
+                var def = cards[term]
+                question = {question: term, choiceA: values[getRandomDef(cards, def)], choiceB: values[getRandomDef(cards, def)], choiceC: values[getRandomDef(cards, def)], choiceD: def, answer: "d"};
+                console.log(question)
+                break;
+            return question;
+        }
+    };
+
+    function getQuestion(term){
+        console.log("in get question")
+        // console.log(term)
+        var cards = JSON.parse('{{cards | tojson}}');
+        // console.log(cards)
+        
+        return generateQuestionAns(cards, term);
+    }
+
+    function getValues(cards){
+        var values = Object.keys(cards).map(function(key){
+        return cards[key];
+        })
+        // console.log(values)
+        return values;
+    }
+
+</script>
+
+
+{% endblock %}
