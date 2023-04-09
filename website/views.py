@@ -3,6 +3,7 @@ from flask_login import login_required, current_user
 
 from .models import User
 from .database import *
+from quizFunc import *
 
 # Define a blueprint called "views" for webpage viewing
 views = Blueprint("views", __name__)
@@ -65,12 +66,19 @@ def view_sets():
         if mode == "flashcard":
             return render_template("show_set.html", user=current_user, cards=cards, title=title)
         elif mode == "quiz":
-            return render_template("quiz_set.html", user=current_user, cards=cards, title=title)
+            questions = []
+            if (validQuiz(cards) == True):
+                questions = createQuiz(cards)
+            else:
+                flash('Unable to create quiz for set. Please make sure there are at least two cards with unique definitions.', category='error')
+            print("questions is: ", questions)
+            return render_template("quiz_set.html", user=current_user, questions=questions, title=title, total=len(questions))
         # return render_template("show_set.html", user=current_user, cards=cards, title=title)
 
     # GET - by default, displays all sets for viewing
     userSets = get_sets_by_privs('admin') 
     return render_template("view_sets.html", user=current_user, userSets = userSets)
+
 
 # called when clicks on 'Edit a Set' on home.html 
 @views.route("/edit_set", methods = ['POST', 'GET'])
@@ -223,7 +231,7 @@ def delete_card():
         No error handling requried here :-)
     - Steven
     """
-
+    
     delete_card_from_set(set_owner, title, _term, _def)
     cards = get_set_by_user_title(set_owner, title)['Cards']
     return render_template("edit_set.html", set_owner=set_owner, user=current_user, cards=cards, title=title)

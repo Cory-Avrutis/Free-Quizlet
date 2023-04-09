@@ -4,20 +4,20 @@
 
 {% block content %}
 
-<!-- need this to add css to just this page for the flashcard -->
 <head>
   <style>
     .question-card {
         margin: auto;
         align-content: center;
         text-align: center;
-        /* min-width: 500px; */
         max-width: 500px;
         min-height: 400px;
         border: black solid 1px;
-        box-shadow: 5px 5px lightblue;
+        box-shadow: 5px 5px #557b83;
         border-radius: 20px;
+        margin-bottom: 20px;
     }
+
     .question-number {
         text-align: center;
         height: 50px;
@@ -25,119 +25,199 @@
         padding-bottom: 15px;
         margin: auto;
     }
+    
+    .question {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    .answers {
+        padding-top: 25px;
+    }
+
+    .correct-choice, .wrong-choice{
+        margin-left: 20px;
+        margin-right: 20px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+
+        border-radius: 20px;
+        height: 75px;
+        width: 175px;
+        background-color: #a2d5ab;
+        border: #557b83 solid;
+        overflow: hidden;
+    }
+
+    .correct-ans {
+        background-color: lightgreen;
+    }
+
+    .wrong-ans-show {
+        background-color: grey;
+    }
+
+    .wrong-ans {
+        background-color: lightcoral;
+    }
+
+    .total-C {
+        text-align: center;
+        border-radius: 25px;
+        border: #557b83 solid;
+        background-color: lightgreen;
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+
+    .total-W {
+        text-align: center;
+        border-radius: 25px;
+        border: #557b83 solid;
+        background-color: lightcoral;
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
   </style>
 </head>
 
 
 <h2 align="center">{{title}}</h2>
-<h2>quiz mode</h2>
+<h3 align="center">Quiz Mode</h3>
+<p>Tutorial: The term will apear on the question card. Select the appropriate definition. This mode works best with study sets that contain more than 4 cards.</p>
 
+<!-- Tutorial Question -->
 <div class ="question-card">
     <h3 class="question-number">Tutorial Question</h3>
     <h4 class="question">Term</h4>
     <div class = "answers">
-        <button>choice A</button>
-        <button>choice B</button>
-        <button>choice C</button>
-        <button>choice D</button>
+        <button class="correct-choice" onclick="correctColor('-1')" id="correct_-1">Correct Answer</button>
+        <button class="wrong-choice" onclick="wrongColor('-1', 1)" id="wrong1_-1">Wrong Answer</button>
+        <button class="wrong-choice"onclick="wrongColor('-1', 1)" id="wrong2_-1">Wrong Answer</button>
+        <button class="wrong-choice"onclick="wrongColor('-1', 1)" id="wrong3_-1">Wrong Answer</button>
     </div>
 </div>
 
-<!-- create a flashcard for every card in the set -->
-{% for term in cards %}
+<!-- create a question for every question in the questions dict -->
+{% for question in questions %}
 
-    <!-- <input type="hidden" id="term" name="variable" value="{{ term }}"> -->
-    <input type="hidden" id="cards" name="variable" value="{{ cards }}">
-    <button type="button" class="btn btn-secondary"  id="quiz_button_{{  loop.index  }}" onclick="getQuestion('{{ term }}')">generate quiz</button>
-    <h2>{{term}}</h2>
-   
-    <p>{{cards[term]}}</p>
+    <div class ="question-card">
+        <h3 class="question-number">Question {{loop.index}} </h3>
+        <h4 class="question">{{question['question']}}</h4>
+        <div class = "answers">
 
+            <!-- each dict has a correct answer key, so the buttons are created based on that (for randomness) -->
+            {% if question['answer'] == 'A' %}
+                <button class="correct-choice" onclick="correctColor('{{loop.index}}')" id="correct_{{ loop.index }}">{{question['choiceA']}}</button>
+                <button class="wrong-choice" onclick="wrongColor('{{loop.index}}', 1)" id="wrong1_{{ loop.index }}">{{question['choiceB']}}</button>
+                <button class="wrong-choice" onclick="wrongColor('{{loop.index}}', 2)" id="wrong2_{{ loop.index }}">{{question['choiceC']}}</button>
+                <button class="wrong-choice" onclick="wrongColor('{{loop.index}}', 3)" id="wrong3_{{ loop.index }}">{{question['choiceD']}}</button>
+            {% endif %}
+            {% if question['answer'] == 'B' %}
+                <button class="wrong-choice" onclick="wrongColor('{{loop.index}}', 1)" id="wrong1_{{ loop.index }}">{{question['choiceA']}}</button>
+                <button class="correct-choice" onclick="correctColor('{{loop.index}}')" id="correct_{{ loop.index }}">{{question['choiceB']}}</button>
+                <button class="wrong-choice" onclick="wrongColor('{{loop.index}}', 2)" id="wrong2_{{ loop.index }}">{{question['choiceC']}}</button>
+                <button class="wrong-choice" onclick="wrongColor('{{loop.index}}', 3)" id="wrong3_{{ loop.index }}">{{question['choiceD']}}</button>
+            {% endif %}
+            {% if question['answer'] == 'C' %}
+                <button class="wrong-choice" onclick="wrongColor('{{loop.index}}', 1)" id="wrong1_{{ loop.index }}">{{question['choiceA']}}</button>
+                <button class="wrong-choice" onclick="wrongColor('{{loop.index}}', 2)" id="wrong2_{{ loop.index }}">{{question['choiceB']}}</button>
+                <button class="correct-choice" onclick="correctColor('{{loop.index}}')" id="correct_{{ loop.index }}">{{question['choiceC']}}</button>
+                <button class="wrong-choice" onclick="wrongColor('{{loop.index}}', 3)" id="wrong3_{{ loop.index }}">{{question['choiceD']}}</button>
+            {% endif %}
+            {% if question['answer'] == 'D' %}
+                <button class="wrong-choice" onclick="wrongColor('{{loop.index}}', 1)" id="wrong1_{{ loop.index }}">{{question['choiceA']}}</button>
+                <button class="wrong-choice" onclick="wrongColor('{{loop.index}}', 2)" id="wrong2_{{ loop.index }}">{{question['choiceB']}}</button>
+                <button class="wrong-choice" onclick="wrongColor('{{loop.index}}', 3)" id="wrong3_{{ loop.index }}">{{question['choiceC']}}</button>
+                <button class="correct-choice" onclick="correctColor('{{loop.index}}')" id="correct_{{ loop.index }}">{{question['choiceD']}}</button>
+            {% endif %}
 
-       
+        </div>
+    </div>
+    
+
 {% endfor %}
+
+<!-- prints the total right and wrong answers, updated with js -->
+<p class= "total-C" id="total-correct">Correct Answers: {{correctAnswers}}/{{total}}</p>
+<p class= "total-W" id="total-wrong">Wrong Answers: {{wrongAnswers}}/{{total}}</p>
 
 <script>
 
-    
-    // for(var key in parsed) {
-    //     var value = parsed[key];
-    //     console.log(value)
-    //     // do something with "key" and "value" variables
-    // }
-    
-    
-    // used for switch to generate a question with a random answer
-    function getRandomChoice(){
-        // returns a random int 0-4 (4 answer choices, (0, 4])
-        return Math.floor(Math.random() * 4);
-    }
+    var totalCorrect = 0
+    var totalWrong = 0
+    var total = {{total}}
 
-    // used to get a random definition
-    function getRandomDef(cards, def){
-        // returns a random int 0-length
-        var length = Object.keys(cards).length
-        var values = getValues(cards)
-        var randInt = Math.floor(Math.random() * length);
-        while (def == values[randInt])
-        {
-            randInt = Math.floor(Math.random() * length);
+    // all of these need loop index in the id to make then unique for each question!!!!
+    
+    // when the right answer is selected, total right answers incremented, correct answer highlighted green,
+    // and the rest of the buttons are turned grey, all disabled
+    function correctColor(loopIndex) {
+        var correctbutton = document.getElementById("correct_" + loopIndex)
+        correctbutton.classList.add("correct-ans")
+        correctbutton.disabled = true
+
+        var wrongButton1 = document.getElementById("wrong1_" + loopIndex)
+        wrongButton1.classList.add("wrong-ans-show")
+        wrongButton1.disabled = true
+
+        var wrongButton2 = document.getElementById("wrong2_" + loopIndex)
+        wrongButton2.classList.add("wrong-ans-show")
+        wrongButton2.disabled = true
+
+        var wrongButton3 = document.getElementById("wrong3_" + loopIndex)
+        wrongButton3.classList.add("wrong-ans-show")
+        wrongButton3.disabled = true
+
+        //updates the total right answers
+        if (loopIndex > 0) {
+            totalCorrect++
+            document.getElementById("total-correct").innerHTML = "Correct Answers: " + totalCorrect + "/" + total;
         }
-        return randInt;
     }
 
-    function getAnswer(cards, term){
-        
-        return cards[term];
-    }
+    // when the wrong answer is selected, total wrong answers increments, correct answer highlighted green,
+    // the wrong selected answer highlighted red, and the rest are turned grey, all disabled
+    function wrongColor(loopIndex, chosen) {
+        var correctbutton = document.getElementById("correct_" + loopIndex)
+        correctbutton.classList.add("correct-ans")
+        correctbutton.disabled = true
 
-    function generateQuestionAns(cards, term){
-        var randChoice = getRandomChoice()
-        console.log(cards)
-        var values = getValues(cards)
-        switch(randChoice){
-            case 0: console.log("a");
-                var def = cards[term]
-                question = {question: term, choiceA: def, choiceB: values[getRandomDef(cards, def)], choiceC: values[getRandomDef(cards, def)], choiceD: values[getRandomDef(cards, def)], answer: "a"};
-                console.log(question)
-                break;
-            case 1: console.log("b");
-                var def = cards[term]
-                question = {question: term, choiceA: values[getRandomDef(cards, def)], choiceB: def, choiceC: values[getRandomDef(cards, def)], choiceD: values[getRandomDef(cards, def)], answer: "b"};
-                console.log(question)
-                break;
-            case 2: console.log("c");
-                var def = cards[term]
-                question = {question: term, choiceA: values[getRandomDef(cards, def)], choiceB: values[getRandomDef(cards, def)], choiceC: def, choiceD: values[getRandomDef(cards, def)], answer: "c"};
-                console.log(question)
-                break;
-            case 3: console.log("d");
-                var def = cards[term]
-                question = {question: term, choiceA: values[getRandomDef(cards, def)], choiceB: values[getRandomDef(cards, def)], choiceC: values[getRandomDef(cards, def)], choiceD: def, answer: "d"};
-                console.log(question)
-                break;
-            return question;
+        var wrongButton1 = document.getElementById("wrong1_" + loopIndex)
+        if (chosen == 1) {
+            wrongButton1.classList.add("wrong-ans")
         }
-    };
+        else{
+            wrongButton1.classList.add("wrong-ans-show")
+        }
+        wrongButton1.disabled = true
 
-    function getQuestion(term){
-        console.log("in get question")
-        // console.log(term)
-        var cards = JSON.parse('{{cards | tojson}}');
-        // console.log(cards)
-        
-        return generateQuestionAns(cards, term);
-    }
+        var wrongButton2 = document.getElementById("wrong2_" + loopIndex)
+        if (chosen == 2) {
+            wrongButton2.classList.add("wrong-ans")
+        }
+        else{
+            wrongButton2.classList.add("wrong-ans-show")
+        }
+        wrongButton2.disabled = true
 
-    function getValues(cards){
-        var values = Object.keys(cards).map(function(key){
-        return cards[key];
-        })
-        // console.log(values)
-        return values;
+        var wrongButton3 = document.getElementById("wrong3_" + loopIndex)
+        if (chosen == 3) {
+            wrongButton3.classList.add("wrong-ans")
+        }
+        else{
+            wrongButton3.classList.add("wrong-ans-show")
+        }
+        wrongButton3.disabled = true
+
+        // wrong answers incremented and updated
+        if (loopIndex > 0) {
+            totalWrong++
+            document.getElementById("total-wrong").innerHTML = "Wrong Answers: " + totalWrong + "/" + total;
+        }
     }
 
 </script>
-
-
 {% endblock %}
