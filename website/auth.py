@@ -7,6 +7,16 @@ import bcrypt
 # Define the "auth" blueprint to handle authorization and security
 auth = Blueprint("auth", __name__)
 
+
+@auth.route('/accounts', methods=['GET','POST'])
+@login_required
+def manage_accounts():
+    ausers = get_users('admin')
+    musers = get_users('mod')
+    users = get_users('user')
+    return render_template('accounts.html',user=current_user, ausers=ausers,musers=musers,users=users)    
+
+
 '''
 Redirect to the login page
     support GET and POST reguests

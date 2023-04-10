@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}View Study Set{% endblock %}
+{% block title %}Edit Study Set{% endblock %}
 
 {% block content %}
 <head>
@@ -10,40 +10,280 @@
         .buttons {
             margin: auto;
             vertical-align: center;
-            width: 300px;
+            width: 400px;
             height: 250px;
         }
 
         /* container for indivual button, padding is distance from each other, min width helps them be the same size */
         .set-button {
-            padding-top: 10px;
+            margin-left: 30px;
+            float: right;
+
             padding-bottom: 10px;
+            height: 60px;
             min-width: 300px;
+            max-width: 300px;
         }
 
         /* add color with hover and active selectors, to the button when mouse hovers over it */
         .set-button:hover, .set-button:active {
             color: #a2d5ab;
         }
-     
-    </style>
+
+        .set-row {
+            width: 400px;
+            height: 50px;
+            margin: auto;
+            margin-bottom: 25px;
+            display: block;
+        }
+        .trash-button {
+            margin: auto;
+            float: left;
+            min-width: 50px;
+            max-height: 60px;
+            width: 25px;
+            padding-top: 5px;
+            background-color: transparent;
+            border: none;
+            align-self: center;
+            font-size: 25px;
+
+        }
+        .trash-button:hover{
+          transform: scale(1.05);
+          transition-duration: 0.5s;
+        }
+        .modal2 {   
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            transition: 200ms ease-in-out;
+            border-radius: 10px;
+            border-bottom: solid black;
+            z-index: 10;
+            background-color: white;
+            width: 500px;
+            height: 300px; 
+
+            max-width: 80%;
+        }
+
+        .modal2.active {
+            transform: translate(-50%, -50%) scale(1)
+        }
+
+        .modal2-header {
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            border-top: solid black;
+            border-bottom: 1px solid black;
+            border-left: solid black;
+            border-right: solid black;
+        }
+
+        .modal2-header .title {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        .modal2-header textarea {
+            /* edited the modal educational video code to include input*/
+            flex: 1;    /*shoves the modal2-body textArea to fit the entire modal2-header area*/
+            border: none;
+            outline: none;
+            font-size: 16px;
+            resize: none;
+        }
+
+        .modal2-header .close-button {
+            cursor: pointer;
+            border: none;
+            outline: none;
+        }
+         .modal2-body {
+            height: calc(100% - 80px); 
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            border-left: solid black;
+            border-right: solid black;
+        }
+
+        .modal2-body textarea {
+            /* edited the modal educational video code to include input*/
+            flex: 1;    /*shoves the modal2-body textArea to fit the entire modal2-body area*/
+            border: none;
+            outline: none;
+            padding: 10px;
+            font-size: 16px;
+            resize: none;
+        }
+
+        .modal2-body .warning {
+          padding: 10px;
+          font-size: 1.25rem;
+          padding-left: 60px;
+          padding-top: 60px;
+        }
+
+
+
+        .modal2-body .done-button {
+            position: absolute;     /*ensures the button is on top of the input area*/
+            bottom: 10px;
+            right: 10px;
+            background-color: #39aea9; 
+            border: none;           
+            color: white;           
+            padding: 10px 20px;
+            text-align: center;  
+            text-decoration: none; /*no decorations (i.e., no underlines or stuff like that)*/
+            display: inline-block; /*basicaly, makes sure the text are within the container and doesn't write/expand outside the modal*/
+            font-size: 20px;
+        }
+
+        .modal2-body .reject-button {
+            cursor: pointer;
+            position: absolute;
+            bottom: 10px;
+            right: auto;
+            left: 10px;
+            background-color: #26d701; 
+            border: none;           
+            color: white;           
+            padding: 10px 20px;
+            text-align: center;  
+            text-decoration: none;
+            display: inline-block;
+            font-size: 20px;
+        }
+        #overlay    /*overlay is what makes the screen go dim after a modal is surfaced*/
+        {
+            position:  fixed;
+            opacity: 0;
+            transition: 200ms ease-in-out;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,.5);
+            pointer-events: none;
+
+        }
+
+        #overlay.active
+        {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+
+        form {
+            display: contents;
+        }
+ </style>
 </head>
 
-<!-- Form for selecting a set to study (sends POST) -->
-<form method="POST" >
+<div id="overlay"></div>
 
+<!-- Form for selecting a set to study (sends POST) -->
     <h2 align="center">Select a Set to Edit</h2>
     
     <!-- show all available sets if any -->
     <div class="buttons">
     {% for set in userSets %}
-        <div class="set-button">
-                <input type = "submit" class="btn btn-dark set-button" value = "{{set['Title']}}" name = "title"  />
+        
+    <div class="set-row">
+          <div class="trash-button">
+            <button class="remove-button trash-button" data-modal-target="#modal_REMOVE_{{  loop.index  }}">
+              <p>&#128465;</p>
+            </button>
+          </div>
+            <form method="POST" >
+                <div class="set-button">
+                    <button type = "submit" class="btn btn-dark set-button" value = "{{ set['Title'] }},{{ set['User']}}" name = "info">
+                    {{ set['Title']}}</button>
+                 </div>
+            </form>
+    </div>
+
+
+
+        <!-- Modal for Trash Button -->
+        <div class = "modal2" id="modal_REMOVE_{{  loop.index  }}">
+            <div class = "modal2-header" style="color:rgb(255, 183, 0);">
+                <div class = "title" >
+                    Are you sure you want to remove this set?
+                </div>
+                <button data-close-button ="" class = "close-button">
+                &times; 
+                </button>      
+            </div>
+
+            <div class="modal2-body">
+                <p class = "warning" >
+                    WARNING: This action cannot be undone.
+                </p>
+                <button data-reject-button class="reject-button">Do NOT delete</button>
+                <form action="{{ url_for('views.delete_set')  }}" method="post">
+                    <input type="hidden" name="title" value="{{ set['Title'] }}">
+                    <input type="hidden" name="set_owner" value="{{ set['User'] }}">
+                    <button class="done-button" style="background-color: #ff2e2e;" >Delete it</button>
+                </form>
         </div>
+      </div>
     {% endfor %}
     </div>
-    
-</form>
+
+  <script>
+    //code to handle modal interactibility using javascript
+
+    const openModalButtons = document.querySelectorAll('[data-modal-target]')   //lets us grab HTML elements using a css selector (the parameter)
+    const closeModalButtons = document.querySelectorAll('[data-close-button], [data-reject-button]')  //and returns all elements in the document that match the selector as a NodeList object
+    const overlay = document.getElementById('overlay') //similiar to querySelectorAll. it just grabs a specified element by id from the document 
+
+    openModalButtons.forEach(button =>{ //so querySelectorAll returned a list of NodeList objects. now we iterate through all of them with forEach
+        button.addEventListener('click', () =>{     //and we add an eventListener to them .
+
+            const modal = document.querySelector(button.dataset.modalTarget)    //when they click, we extract the modal information
+            openModal(modal)                                                    //and open (present to user) it
+        })
+    })
+
+    closeModalButtons.forEach(button =>{
+        button.addEventListener('click', () =>{
+            const modal = button.closest('.modal2')
+        
+            closeModal(modal)   //same logic with openModal, but instead closes the modal rather than present to user
+        })
+    })
+
+  
+    overlay.addEventListener('click', ()=>{     //in addition to the x button closing the modal, this func lets users click outside of modal to close 
+        const Modals = document.querySelectorAll('.modal2.active')
+        Modals.forEach(modal =>{
+            closeModal(modal)
+        })
+    })
 
 
+
+    function openModal(modal){
+        console.log('called')
+        if (modal == null) return
+        modal.classList.add('active')       //updates the specific instance of a modal's active attribute.
+        overlay.classList.add('active')     //when a modal's active attribute is set, the rest of the screen should be dimmed.
+    }
+
+    function closeModal(modal){
+        if (modal == null) return
+        modal.classList.remove('active')    //the negation logic of above
+        overlay.classList.remove('active')  //if it's no longer active, make the rest of the screen normal
+    }
+</script>
 {% endblock %}

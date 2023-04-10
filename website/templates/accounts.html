@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Account Management{% endblock %}
+
+{% block content %}
+<head>
+    <style>
+        table {
+          border-collapse: collapse;
+          width: 100%;
+        }
+
+        th, td {
+          text-align: left;
+          padding: 8px;
+          border: 1px solid #ddd;
+        }
+
+        th {
+          background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+          background-color: #f2f2f2;
+        }
+
+        td:first-child, th:first-child {
+          border-left: none;
+        }
+
+        td:last-child, th:last-child {
+          border-right: none;
+        }
+
+        tr:last-child td {
+          border-bottom: none;
+        }
+    </style>
+
+</head>
+
+<form >
+    <table>
+        <thead>
+            <tr>
+                <th>Administrators</th>
+                <th>Moderators</th>
+                <th>Users</th>
+            </tr>
+        </thead>
+    <tbody>
+        {% for user in ausers %}
+            <tr>
+                <td><button>{{ user.username }}</button></td>
+                <td></td>
+                <td></td>
+            </tr>
+        {% endfor %}
+        {% for user in musers %}
+            <tr>
+                <td></td>
+                <td><button>{{ user.username }}</button></td>
+                <td></td>
+            </tr>
+        {% endfor %}
+        {% for user in users %}
+            <tr>
+                <td></td>
+                <td></td>
+                <td>
+                    <button class="delete-user-btn" data-user-id="{{ user.username }}">Delete</button>
+                    <button>{{ user.username }}</button>
+                </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+</form>
+{% endblock %}
