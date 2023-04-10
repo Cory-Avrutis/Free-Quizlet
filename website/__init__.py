@@ -14,6 +14,8 @@ def create_app():
     app.register_blueprint(views, url_prefix="/")
     app.register_blueprint(auth, url_prefix="/")
 
+    # registering funcs for templates
+    app.jinja_env.globals.update(get_user_privs=get_user_privs)
     # Initialize flasks login manager
     login_manager = LoginManager()
     login_manager.login_view = "auth.login"

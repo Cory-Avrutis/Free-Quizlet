@@ -18,7 +18,12 @@ db = client["quizlet"]
 users = db["users"]
 card_sets = db["card_sets"]
 
-
+# returns all users, optional privilege filter
+def get_users(privs=None):
+    if privs:
+        return users.find({'privs' : privs})
+    return users.find()
+    
 # inserts a new user record into a collection
 def insert_new_user(usr, pwd, email):
     rec = {
