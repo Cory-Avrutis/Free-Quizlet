@@ -516,6 +516,7 @@
     //(that's how a form wrapping both components work)
 
     //so now, the form code is only being wrapped around on the done button. so it can only submit itself if and only if the user hit 'Done'
+    //that's why this form in particular needs a bit of help retrieving inputs
 
   </script>
 
@@ -550,9 +551,7 @@
             closeModal(modal)
         })
     })
-
-
-
+    
     function openModal(modal){
         if (modal == null) return
         modal.classList.add('active')       //updates the specific instance of a modal's active attribute.

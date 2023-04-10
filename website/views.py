@@ -97,6 +97,7 @@ def edit_title():
     cards = get_set_by_user_title(current_user.get_id(), f_title)['Cards']
     return render_template("edit_set.html", user=current_user, cards=cards, title=f_title)
 
+# called when user clicks term to edit on edit_set.html
 @views.route("/edit_term", methods = ['POST', 'GET'])
 @login_required
 def edit_term():
@@ -151,6 +152,7 @@ def edit_term():
     return render_template("edit_set.html", user=current_user, cards=cards, title=title)
 
 
+# called when user clicks definition to edit on edit_set.html
 @views.route("/edit_definition", methods = ['POST', 'GET'])
 @login_required
 def edit_definition():
@@ -178,7 +180,7 @@ def edit_definition():
     return render_template("edit_set.html", user=current_user, cards=cards, title=title)
 
 
-
+# called when user clicks 'Add new card' from on edit_set.html
 @views.route("/new_card", methods = ['POST', 'GET'])
 @login_required
 def new_card():
@@ -215,7 +217,7 @@ def new_card():
     
     return render_template("edit_set.html", user=current_user, cards=cards, title=title)
 
-
+# called when user clicks the trash icon from on edit_set.html
 @views.route("/delete_card", methods = ['POST', 'GET'])
 @login_required
 def delete_card():
