@@ -73,7 +73,17 @@ def view_sets():
                 flash('Unable to create quiz for set. Please make sure there are at least two cards with unique definitions.', category='error')
             print("questions is: ", questions)
             return render_template("quiz_set.html", user=current_user, questions=questions, title=title, total=len(questions))
-        # return render_template("show_set.html", user=current_user, cards=cards, title=title)
+        elif mode == "write":
+            if len(cards) < 1 :
+                flash('Unable to create write mode for set. Please make sure there is at least one card in the set.', category='error')
+            else:
+                cards = get_set_by_user_title(set_owner, title)['Cards']
+                return render_template("write_set.html", set_owner=set_owner,user=current_user, cards=cards, title=title)
+            
+            
+
+            #start coding here 
+            # return render_template("write.html", user=current_user, cards=cards, title=title)
 
     # GET - by default, displays all sets for viewing
     userSets = get_sets_by_privs('admin') 
