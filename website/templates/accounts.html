@@ -35,45 +35,242 @@
         tr:last-child td {
           border-bottom: none;
         }
+        
+        .trash-button {
+            margin: auto;
+            float: left;
+            min-width: 50px;
+            max-height: 60px;
+            width: 25px;
+            padding-top: 5px;
+            background-color: transparent;
+            border: none;
+            align-self: center;
+            font-size: 25px;
+
+        }
+        .trash-button:hover{
+          transform: scale(1.05);
+          transition-duration: 0.5s;
+        }
+        .modal2 {   
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            transition: 200ms ease-in-out;
+            border-radius: 10px;
+            border-bottom: solid black;
+            z-index: 10;
+            background-color: white;
+            width: 500px;
+            height: 300px; 
+
+            max-width: 80%;
+        }
+
+        .modal2.active {
+            transform: translate(-50%, -50%) scale(1)
+        }
+
+        .modal2-header {
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            border-top: solid black;
+            border-bottom: 1px solid black;
+            border-left: solid black;
+            border-right: solid black;
+        }
+
+        .modal2-header .title {
     </style>
 
 </head>
 
-<form >
-    <table>
-        <thead>
-            <tr>
-                <th>Administrators</th>
-                <th>Moderators</th>
-                <th>Users</th>
-            </tr>
-        </thead>
-    <tbody>
-        {% for user in ausers %}
-            <tr>
-                <td><button>{{ user.username }}</button></td>
-                <td></td>
-                <td></td>
-            </tr>
-        {% endfor %}
-        {% for user in musers %}
-            <tr>
-                <td></td>
-                <td><button>{{ user.username }}</button></td>
-                <td></td>
-            </tr>
-        {% endfor %}
-        {% for user in users %}
-            <tr>
-                <td></td>
-                <td></td>
-                <td>
-                    <button class="delete-user-btn" data-user-id="{{ user.username }}">Delete</button>
-                    <button>{{ user.username }}</button>
-                </td>
+
+
+<div id="overlay"></div>
+
+
+
+<table>
+    <thead>
+        <tr>
+            <th>Administrators</th>
+            <th>Moderators</th>
+            <th>Users</th>
         </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-</form>
+    </thead>
+<tbody>
+    {% for user in ausers %}
+        <tr>
+            <td><button class="btn btn-dark disabled">{{ user.username }}</button></td>
+            <td></td>
+            <td></td>
+        </tr>   
+    {% endfor %}
+    {% for user in musers %}
+        <tr>
+            <td></td>
+            <td><button class="btn btn-dark" data-modal-target="#modal_mod_privs_{{ loop.index }}">{{ user.username }}</button></td>
+            <td></td>
+        </tr>
+        
+        <!--
+            Modal to receive input after a user account button is clicked
+        -->
+
+        <div class = "modal2" id="modal_mod_privs_{{ loop.index }}">
+            <div class = "modal2-header">
+                <div class = "title" >
+                    Please select a privilege level for '{{ user.username[:46] }}...' <!-- shows only first 46 characters -->
+                </div>
+
+                <button data-close-button ="" class = "close-button">
+                    &times; <!-- Easier to style this symbol (the 'X'), insead of the actual 'X' character from keyboard-->
+                </button>      
+            </div>
+            
+            <div class="modal2-body">
+                <form action="{{ url_for('auth.change_privs')  }}" method="post">
+
+                    <input type="hidden" name="user" value="{{ user.username }}"> <!-- sends the old title. useful for database query-->
+
+                    <input type="radio" name="privilege" value="administrator"> Administrator<br>
+                    <input type="radio" name="privilege" value="moderator"> Moderator<br>
+                    <input type="radio" name="privilege" value="user"> User<br>
+                     
+                    <button id="title_done" class="title-done-button done-button"  type="submit">
+                        Submit    
+                    </button>
+                </form>
+            </div>
+        </div>
+    {% endfor %}
+    {% for user in users %}
+        <tr>
+            <td></td>
+            <td></td>
+            <td>
+                <div class="trash-button">
+                    <button class="remove-button trash-button" data-modal-target="#modal_REMOVE_{{  loop.index  }}">
+                        <p>&#128465;</p>
+                    </button>
+                </div>
+                <button class="btn btn-dark set-button" data-modal-target="#modal_privs_{{ loop.index }}">{{ user.username }}</button>
+            </td>
+        </tr>
+    
+        <!--
+            Modal to receive input after a user account button is clicked
+        -->
+
+        <div class = "modal2" id="modal_privs_{{ loop.index }}">
+            <div class = "modal2-header">
+                <div class = "title" >
+                    Please select a privilege level for '{{ user.username[:46] }}...' <!-- shows only first 46 characters -->
+                </div>
+
+                <button data-close-button ="" class = "close-button">
+                    &times; <!-- Easier to style this symbol (the 'X'), insead of the actual 'X' character from keyboard-->
+                </button>      
+            </div>
+
+            <div class="modal2-body">
+                <form action="{{ url_for('auth.change_privs')  }}" method="post">
+
+                    <input type="hidden" name="user" value="{{ user.username }}"> <!-- sends the old title. useful for database query-->
+
+                    <input type="radio" name="privilege" value="administrator"> Administrator<br>
+                    <input type="radio" name="privilege" value="moderator"> Moderator<br>
+                    <input type="radio" name="privilege" value="user"> User<br>
+                     
+                    <button id="title_done" class="title-done-button done-button"  type="submit">
+                        Submit    
+                    </button>
+                </form>
+            </div>
+
+
+        </div>
+
+
+        
+        <!-- Modal for Trash Button -->
+        <div class = "modal2" id="modal_REMOVE_{{  loop.index  }}">
+            <div class = "modal2-header" style="color:rgb(255, 183, 0);">
+                <div class = "title" >
+                    Are you sure you want delete account '{{user.username}}' ?
+                </div>
+                <button data-close-button ="" class = "close-button">
+                &times; 
+                </button>      
+            </div>
+            <div class="modal2-body">
+                <p class = "warning" >
+                    WARNING: This action cannot be undone.
+                </p>
+                <button data-reject-button class="reject-button">Do NOT delete</button>
+                <form action="{{ url_for('auth.delete_account')  }}" method="post">
+                    <input type="hidden" name="user" value="{{user.username}}">
+                    <button class="done-button" style="background-color: #ff2e2e;" >Delete it</button>
+                </form>
+            </div>
+        </div>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+
+<script>
+    //code to handle modal interactibility using javascript
+
+    const openModalButtons = document.querySelectorAll('[data-modal-target]')   //lets us grab HTML elements using a css selector (the parameter)
+    const closeModalButtons = document.querySelectorAll('[data-close-button], [data-reject-button]')  //and returns all elements in the document that match the selector as a NodeList object
+    const overlay = document.getElementById('overlay') //similiar to querySelectorAll. it just grabs a specified element by id from the document 
+
+    openModalButtons.forEach(button =>{ //so querySelectorAll returned a list of NodeList objects. now we iterate through all of them with forEach
+        button.addEventListener('click', () =>{     //and we add an eventListener to them .
+
+            const modal = document.querySelector(button.dataset.modalTarget)    //when they click, we extract the modal information
+            openModal(modal)                                                    //and open (present to user) it
+        })
+    })
+
+    closeModalButtons.forEach(button =>{
+        button.addEventListener('click', () =>{
+            const modal = button.closest('.modal2')
+        
+            closeModal(modal)   //same logic with openModal, but instead closes the modal rather than present to user
+        })
+    })
+
+  
+    overlay.addEventListener('click', ()=>{     //in addition to the x button closing the modal, this func lets users click outside of modal to close 
+        const Modals = document.querySelectorAll('.modal2.active')
+        Modals.forEach(modal =>{
+            closeModal(modal)
+        })
+    })
+
+
+
+    function openModal(modal){
+        console.log('called')
+        if (modal == null) return
+        modal.classList.add('active')       //updates the specific instance of a modal's active attribute.
+        overlay.classList.add('active')     //when a modal's active attribute is set, the rest of the screen should be dimmed.
+    }
+
+    function closeModal(modal){
+        if (modal == null) return
+        modal.classList.remove('active')    //the negation logic of above
+        overlay.classList.remove('active')  //if it's no longer active, make the rest of the screen normal
+    }
+</script>
+
 {% endblock %}

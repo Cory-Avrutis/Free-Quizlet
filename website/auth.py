@@ -8,6 +8,7 @@ import bcrypt
 auth = Blueprint("auth", __name__)
 
 
+# route to account management (admin only)
 @auth.route('/accounts', methods=['GET','POST'])
 @login_required
 def manage_accounts():
@@ -15,6 +16,30 @@ def manage_accounts():
     musers = get_users('mod')
     users = get_users('user')
     return render_template('accounts.html',user=current_user, ausers=ausers,musers=musers,users=users)    
+
+# delete an account
+@auth.route("/delete_acc", methods = ['POST'])
+@login_required
+def delete_account():
+    d_user = request.form.get('user')
+    print('Delete user \'', d_user, '\'')
+    ausers = get_users('admin')
+    musers = get_users('mod')
+    users = get_users('user')
+    return render_template('accounts.html',user=current_user, ausers=ausers,musers=musers,users=users)    
+
+# change privileges for an account
+@auth.route("/change_priv", methods = ['POST'])
+@login_required
+def change_privs():
+    p_user = request.form.get('user')
+    new_priv = request.form.get('privilege')
+    print('Change \'', p_user, '\' to ', new_priv)
+    ausers = get_users('admin')
+    musers = get_users('mod')
+    users = get_users('user')
+    return render_template('accounts.html',user=current_user, ausers=ausers,musers=musers,users=users)    
+
 
 
 '''
