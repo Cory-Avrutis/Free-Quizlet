@@ -1,84 +1,56 @@
 {% extends "base.html" %}
 
-{% block title %}Write Mode{% endblock %}
-
+{% block title %}Edit Study Set{% endblock %}
 
 {% block content %}
 <head>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap">
-    <!--
-        Changing up the font a bit for the type chase affect. Got the font from Google's fonts, under the family Roboto
-    -->
-    <style>
-        .type_box{
-            width: 60%; /* Makes the width and size of the box about 60% of width and heigh of screens, respectively */
-            height: 60%;
-            background-color:chocolate; /* Going for a home depot look lol for development. will change when feature is ready*/
-            border: 2px solid black;    
+  <title>Type Box Example</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+  <style>
+    body {
+      font-family: "Roboto", sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .type-box {
+      width: 60%;   /*make it 60% of the user's screen*/
+      height: 60%;
 
-            position: absolute;           /*disregards other css rules, makes this div go directly where's it is intended */
-            top: 50%;                     /*put its 50% from top*/
-            left: 50%;                    /*and 50% away from the left*/
-            transform: translate(-50%, -50%);   /* Helps place it in middle*/
-            
-            font-family: Roboto;                /* I liked this font for a type chase affect.*/
-        }
-
-        .type_box .header{
-            border-bottom: 2px solid black;     /* Creates the underline affect for the header component*/
-            text-align: center;                   
-            font-size: 20px;    
-            height: 50px;                         /*Takes up the first 50 pixels of the type_box height*/
-            overflow-y: scroll;                   /*Allows text to be scrolled*/
-        }
-
-        .type_box .header, .type_box .body {
-            overflow: hidden;   /*Hides scroll bar for scrolling for the overflow-y texts.*/
-        }
-
-      
-        .type_box .body{
-            font-size: 20px;
-            height: calc(100% - 30px); /* subtract the height of the header from the total height */
-            width: 100%;
-            margin: 0;
-        }
-
-        .type_box .body input {
-            width: 100%;
-            height: 100%;
-            border: none;
-            outline: none;
-            font-family: Roboto;
-            font-size: 20px;
-            text-align: left;
-            background-color: transparent;
-        }
-
-    </style>
+      background-color: #f7f7f7;
+      border: 2px solid #333;
+      position: absolute;        /*specifies that the box is positioned relative to its nearest positioned ancestor (cory's nav bar)*/
+      top: 50%;     /*centers it*/
+      left: 50%;    /*centers it*/
+      transform: translate(-50%, -50%); /*centers it*/
+      display: flex;            /*allows to easily manipulate the layout and positioning of the elements inside the box*/
+      flex-direction: column;   /*the flex items will be stacked vertically rather than horizontally*/
+    }
+    
+    .type-box-header {
+      border-bottom: 2px solid #333;
+      padding: 10px;
+      font-size: 24px;
+      text-align: center;
+    }
+    
+    .type-box-input {
+      flex-grow: 1;             /* the input will grow and occupy more space if there is extra space available in the box*/
+      padding: 10px;
+      font-size: 18px;
+      border: none;
+      outline: none;
+      background-color: transparent;
+    }
+  </style>
 </head>
 
-{% for term in cards %}
-    <div id = "main_box" class="type_box" >
-        <div id = "term" class="header">
-            <h1>
-                {{ term }}
-            </h1>
-        </div>
-
-        <div id = "definition" class = "body">
-            <input id="input_definition" type="text" class = "input_text">
-        </div>
-    </div>
-<!--
-    will need to work with javascript to only advance iteration when user hits 100%
--->
-{% endfor %}
 
 
-<script>
-    //work in progress
-</script>
-
-
+<body>
+  <div class="type-box">
+    <div class="type-box-header">Type Box Example</div>
+    <textarea class="type-box-input"></textarea>
+  </div>
+</body>
 {% endblock %}
