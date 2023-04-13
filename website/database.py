@@ -27,10 +27,10 @@ def get_users(privs=None):
 # inserts a new user record into a collection
 def insert_new_user(usr, pwd, email):
     rec = {
-            "username" : usr,
+            "username" : usr.strip(),
             "password" : pwd,
             "privs"    : "user",
-            "email"    : email
+            "email"    : email.strip()
           }
     users.insert_one(rec)
 
