@@ -3,6 +3,11 @@
 {% block title %}Edit Study Set{% endblock %}
 
 {% block content %}
+
+<!--
+  Tutorial link: https://www.youtube.com/watch?v=Hg80AjDNnJk
+-->
+
 <head>
   <title>Write mode</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
@@ -45,34 +50,51 @@
   </style>
 </head>
 
-
-
 <body>
 
 {% for term in cards %}
   <div class="type-box">
     <div class="type-box-header">{{ term }}</div>
 
-    <textarea class="type-box-input" id = "def_{{ loop.index }}" data-value = "{{ cards[term] }}"></textarea> 
+    <input type = "text" id = "input_{{ loop.index }}"">
     
+    <p class="type-box-input" id = "def_{{ loop.index }}" data-value = "{{ cards[term] }}"></p> 
+
   </div>
 
   <script>
-    var html_element = document.querySelector('#def_{{ loop.index }}') //grab the hidden html element from above. the # means we are about to reference an id
-    var string = html_element.getAttribute('data-value')               //getAttribute is an accessor function that lets us retrieve the value
+    var inpField = document.querySelector('#input_{{ loop.index }}')    //grabs the input element from above
+    var html_element = document.querySelector('#def_{{ loop.index }}'); // grab the paragraph element
 
-    console.log(string)
+    function convert_2_span(){
+      //converts the definition into span elements 
+      var definition = html_element.getAttribute('data-value');               // get the value of the data-value attribute
 
-    /*
-    string[0].split("").forEach(span =>{
-      let spanTag = `<span>${span}</span>`
-    })
-    */
+      console.log(definition);
+
+      //beginning of process to convert every character of the definition (definition) into spans
+      var span_elements = ''; 
+
+      definition.split('').forEach(char => {
+        span_elements += '<span>' + char + '</span>'; // add a new span element for each character in the definition
+      });
+
+      html_element.innerHTML = span_elements // set the innerHTML property (the text) of the input element (the paragraph element) to the updated span_definition
+
+      //end of process. now, the characters can be manipulated with JavaScript
+
+      document.addEventListener("keydown", () => inpField.focus());
+      html_element.addEventListener("click", () => inpField.focus());
+    }
+    convert_2_span();
+    inpField.addEventListener("input", initTyping);
+
+
+
+
 
   </script>
 {% endfor %}
-
 </body>
-
 
 {% endblock %}
