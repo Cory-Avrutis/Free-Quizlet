@@ -48,9 +48,25 @@
 
 
 <body>
+
+{% for term in cards %}
   <div class="type-box">
-    <div class="type-box-header">my better type box</div>
-    <textarea class="type-box-input" autofocus></textarea>
+    <div class="type-box-header">{{ term }}</div>
+
+      <input type = "hidden" id = "def_{{ loop.index }}" data-value = "{{ cards[term] }}">
+
+    <textarea class="type-box-input"></textarea> 
   </div>
+
+  <script>
+    var html_element = document.querySelector('#def_{{ loop.index }}') //grab the hidden html element from above. the # means we are about to reference an id
+    console.log(html_element.getAttribute('data-value'))               //getAttribute is an accessor function that lets us retrieve the value
+
+    
+  </script>
+{% endfor %}
+
 </body>
+
+
 {% endblock %}
