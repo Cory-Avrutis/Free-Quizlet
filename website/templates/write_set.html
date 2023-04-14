@@ -55,14 +55,22 @@
 
       <input type = "hidden" id = "def_{{ loop.index }}" data-value = "{{ cards[term] }}">
 
+      <p></p>
+
     <textarea class="type-box-input"></textarea> 
   </div>
 
   <script>
     var html_element = document.querySelector('#def_{{ loop.index }}') //grab the hidden html element from above. the # means we are about to reference an id
-    console.log(html_element.getAttribute('data-value'))               //getAttribute is an accessor function that lets us retrieve the value
 
-    
+    var string = html_element.getAttribute('data-value')                             //getAttribute is an accessor function that lets us retrieve the value
+
+    console.log(string)
+
+    string[0].split("").forEach(span =>{
+      let spanTag = `<span>${span}</span>`
+    })
+
   </script>
 {% endfor %}
 
