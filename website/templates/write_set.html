@@ -24,7 +24,7 @@
 
       background-color: #f7f7f7;
       border: 2px solid #333;
-      position: absolute;        /*specifies that the box is positioned relative to its nearest positioned ancestor (cory's nav bar)*/
+      position: absolute;        /*specifies that the box is positioned relative to its nearest positioned ancestor (Cory's nav bar)*/
       top: 50%;     /*centers it*/
       left: 50%;    /*centers it*/
       transform: translate(-50%, -50%); /*centers it*/
@@ -47,6 +47,49 @@
       outline: none;
       background-color: transparent;
     }
+
+   .span{
+    position: relative;
+   }
+
+    .type-box-input .correct{   /*need to ask mariela again how in css to make a container a child of another (i.e., .type-box-input .span-correct ?)*/
+      color: darkseagreen;
+    }
+
+    .type-box-input .incorrect{ /*ditto ^ */
+      color: red;
+      background-color: hotpink;
+      outline: 1px solid;
+      border-radius: 4px;
+    }
+
+    .type-box-input .active { /* glithy/need to ask mariela proper syntax */
+      color: rebeccapurple;
+      position: relative; /* make the ::before absolute position relative to this element */
+    }
+
+  .type-box-input .active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px; /* set the position to just below the text */
+    height: 2px;
+    width: 100%;
+    opacity: 1;
+    background: rebeccapurple;
+    animation: blink 1s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+    
+
+
+
+
   </style>
 </head>
 
@@ -56,7 +99,7 @@
   <div class="type-box">
     <div class="type-box-header">{{ term }}</div>
 
-    <input type = "text" id = "input_{{ loop.index }}"">
+    <input type = "text" id = "input_{{ loop.index }}">
     
     <p class="type-box-input" id = "def_{{ loop.index }}" data-value = "{{ cards[term] }}"></p> 
 
@@ -65,12 +108,11 @@
   <script>
     var inpField = document.querySelector('#input_{{ loop.index }}')    //grabs the input element from above
     var html_element = document.querySelector('#def_{{ loop.index }}'); // grab the paragraph element
+    let charIndex = 0
 
     function convert_2_span(){
       //converts the definition into span elements 
       var definition = html_element.getAttribute('data-value');               // get the value of the data-value attribute
-
-      console.log(definition);
 
       //beginning of process to convert every character of the definition (definition) into spans
       var span_elements = ''; 
@@ -81,17 +123,31 @@
 
       html_element.innerHTML = span_elements // set the innerHTML property (the text) of the input element (the paragraph element) to the updated span_definition
 
-      //end of process. now, the characters can be manipulated with JavaScript
+      console.log("The inner html elements: ", span_elements)
+
+      //end of process. now, the characters can be manipulated with JavaScript, like adding a classList to each character
 
       document.addEventListener("keydown", () => inpField.focus());
       html_element.addEventListener("click", () => inpField.focus());
     }
+
+    function initTyping(){
+      var def_characters = html_element.querySelectorAll("span"); //retrieve all those span elements from earlier in previous function
+      let typedChar = inpField.value.split("")                    //retrieve what the user put after every button from keyboard pressed (separate everything by a " "/space)
+
+      if(def_characters[charIndex].textContent === typedChar[charIndex]){ //compare the definition characters with the input characters
+        def_characters[charIndex].classList.add("correct");               //if match, add a class named correct to the span element
+      } else{
+        def_characters[charIndex].classList.add("incorrect");             //if not, add a class named incorrect to the span element
+      }
+
+      charIndex++;                                                        //update tracker/position
+      def_characters.forEach(span => span.classList.remove("active"));
+      def_characters[charIndex].classList.add("active");
+    }
+
     convert_2_span();
     inpField.addEventListener("input", initTyping);
-
-
-
-
 
   </script>
 {% endfor %}
