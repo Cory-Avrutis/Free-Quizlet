@@ -134,14 +134,25 @@
     function initTyping(){
       var def_characters = html_element.querySelectorAll("span"); //retrieve all those span elements from earlier in previous function
       let typedChar = inpField.value.split("")                    //retrieve what the user put after every button from keyboard pressed (separate everything by a " "/space)
+      
 
-      if(def_characters[charIndex].textContent === typedChar[charIndex]){ //compare the definition characters with the input characters
-        def_characters[charIndex].classList.add("correct");               //if match, add a class named correct to the span element
-      } else{
-        def_characters[charIndex].classList.add("incorrect");             //if not, add a class named incorrect to the span element
+      if(typedChar[charIndex] == null){                                      //if they click backspace or null (nothing/invalid/other stuff)
+        console.log("looky here")
+
+        if(charIndex > 0)
+          charIndex--;
+        def_characters[charIndex].classList.remove("correct", "incorrect");             //remove either one (resets it to default color)
+      }else{
+
+        if(def_characters[charIndex].textContent === typedChar[charIndex]){ //compare the definition characters with the input characters
+          def_characters[charIndex].classList.add("correct");               //if match, add a class named correct to the span element
+        } else{
+          def_characters[charIndex].classList.add("incorrect");             //if not, add a class named incorrect to the span element
+        }
+
+        charIndex++;                                                        //update tracker/position
       }
 
-      charIndex++;                                                        //update tracker/position
       def_characters.forEach(span => span.classList.remove("active"));
       def_characters[charIndex].classList.add("active");
     }
