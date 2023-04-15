@@ -5,6 +5,9 @@ from .models import User
 from .database import *
 from quizFunc import *
 
+import copy     #to make a copy of the dictionary for write
+from collections import OrderedDict #to make that copied dictionary in order
+
 # Define a blueprint called "views" for webpage viewing
 views = Blueprint("views", __name__)
 
@@ -77,8 +80,19 @@ def view_sets():
             if len(cards) < 1 :
                 flash('Unable to create write mode for set. Please make sure there is at least one card in the set.', category='error')
             else:
+
+                #bit different for write mode. instead of sending all the cards at once, i just want the first one
+                #then when user is done with first, i'll reload render_template with the second one. similiar logic for when they finish the second
+                #repeat this logic until i iterate through all the cards
+
+
                 cards = get_set_by_user_title(set_owner, title)['Cards']
-                return render_template("write_set.html", set_owner=set_owner,user=current_user, cards=cards, title=title)
+                
+                copy_and_ordered = copy.deepcopy(cards)
+                copy_and_ordered = OrderedDict(sorted(copy_and_ordered.items()))
+                numCards = len(copy_and_ordered)
+
+                return render_template("write_set.html", set_owner=set_owner, user=current_user, cards = copy_and_ordered, numCards = numCards)
             
             
 
