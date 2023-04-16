@@ -103,6 +103,10 @@ content %}
   </style>
 </head>
 
+
+<h2 align="center">Write Mode</h2>
+<h4 align="center">No need to click on text to start! Just start typing</h4>
+
 <body>
   <div class="type-box">
     <div class="type-box-header">{{ card_term }}</div>
@@ -123,6 +127,20 @@ content %}
 
     let charIndex = 0
     let correct = 0
+
+    let userString = '' //just a regular string, no span elements involved. will send this back to backend to confirm if they got it right
+
+
+    document.addEventListener('keydown', (event) => {
+      if(event.key === 'Backspace' && userString.length > 0){
+        userString = userString.slice(0, -1) //pop the last element
+      }
+
+      else if(event.key.length === 1){  //if it's a printable character
+        const input_char = event.key  
+        userString += input_char        //add it
+      }
+    })
 
     function convert_2_span() {
       //converts the definition into span elements
@@ -177,12 +195,45 @@ content %}
           form.method = 'POST'
           form.action = '/next-card'
 
+          /*
+            send the user's final answer up to the backend. compare the string to see if they got it right in the backend
+            if not, then just reload this write_set.html to make them try again
+
+            kind of lengthy. 
+            1) need to send what user typed
+            2) need to correct answer
+            3) need to do a string compare back over in the backend (views.py)
+            4) if correct, proceed next card
+            4.5) if incorrect, reload same card
+
+            OR
+
+            some if statements here in javascript. if input_answer == actual_answer, else ignore
+
+            OR
+
+            just leave it as is? like they can get it all wrong and proceed to next one .. ? because i'm lazy haha
+            
+          */
+
+          
+
+          const answerInput = document.createElement('input')
+          answerInput.type = 'hidden'
+          answerInput.name = 'input_answer' 
+          answerInput.value = userString
+
+          const actualAnswer = document.createElement('input')
+          actualAnswer.type = 'hidden'
+          actualAnswer.name = 'actual_answer'
+          actualAnswer.value = '{{  cards[card_term]  }}'
+
       
           //input information related to the title
           const titleInput = document.createElement('input')
           titleInput.type = 'hidden'
           titleInput.name = 'title'
-          titleInput.value = '{{title}}'.replace(/'/g, '&#39;') //a dumb glitch is happening here. 
+          titleInput.value = '{{title}}' //a dumb glitch is happening here. because of javascript (did i mention how much i love javascript? )
 
           /*
             JavaScript cannot recognize special characters (~, ', etc.) 
@@ -196,6 +247,8 @@ content %}
             Working on a fix. I tried doing replace, but the replace doesn't work.
             I'm thinking about making a python function, and just checking the title there instead, changing it
             as needed
+
+            update: this is fixed and taken care of in the backend (views.py)
           */
 
           console.log("The title from the parameter is ", titleInput.value) 
@@ -214,24 +267,21 @@ content %}
           indexInput.name = 'current_index'
           indexInput.value = ('{{currentIndex}}') 
 
-           /*
-            send the user's final answer up to the backend. compare the string to see if they got it right in the backend
-            if not, then just reload this write_set.html to make them try again
-            const answerInput = document.createElement('input')
-            answerInput.type = 'hidden'
-            answerInput.name = 'answer'
-            answerInput.value = userInput
-          */
+           
 
           //add the input fields to the form, submit the form after
-          /*form.appendChild(answerInput)*/
+          form.appendChild(answerInput)
+          form.appendChild(actualAnswer)
           form.appendChild(titleInput)
           form.appendChild(ownerInput)
           form.appendChild(indexInput)
 
-          //append form to body. this one line of code below took me an hour to realize : - ) I love javascript <3 
-          document.body.appendChild(form);  // link: https://stackoverflow.com/questions/42053775/getting-error-form-submission-canceled-because-the-form-is-not-connected
+          //append form to body. this one line of code below took me an hour to realize : - ) I love javascript <3 (end me)
+          document.body.appendChild(form);  // credit to: https://stackoverflow.com/questions/42053775/getting-error-form-submission-canceled-because-the-form-is-not-connected
+          
 
+
+          console.log("The answerInput.value is ", answerInput.value)
           form.submit()
         }
       }

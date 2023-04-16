@@ -87,13 +87,15 @@ def view_sets():
             else:
 
                 #bit different for write mode. instead of sending all the cards at once, i just want the first one
-                #then when user is done with first, i'll reload render_template with the second one. similiar logic for when they finish the second
+                #then when user is done with first, i'll reload render_template with the second one with the next-card route
+                # similiar logic for when they finish the second
                 #repeat this logic until i iterate through all the cards
 
                 copy_and_ordered = copy.deepcopy(cards)
                 copy_and_ordered = OrderedDict(sorted(copy_and_ordered.items())) 
 
-                first_card_term = list(copy_and_ordered.keys())[0]            
+                first_card_term = list(copy_and_ordered.keys())[0]
+                #flash('No need to click on the text to start! Just start typing. ', category='error')    good idea but stays on screen too long    
                 return render_template("write_set.html", set_owner=set_owner, user=current_user, title=title, card_term = first_card_term, currentIndex = 0, cards = copy_and_ordered)
             #start coding here 
             # return render_template("write.html", user=current_user, cards=cards, title=title)
@@ -110,7 +112,14 @@ def next_card():
     
     set_owner = request.form['set_owner']
     title = request.form['title']
-    title = html.unescape(title)
+    title = html.unescape(title)        #fixes the javascript problem of not recognizing special characters
+
+    actual_answer = request.form['actual_answer']
+    input_answer = request.form['input_answer']  
+    
+
+    input_answer = html.unescape(input_answer)        #wasn't part of the original problem above, but should fix future problems in case
+    actual_answer = html.unescape(actual_answer)    #user puts any special characters as part of their submission
 
     current_index = int(request.form['current_index'])
 
@@ -128,6 +137,11 @@ def next_card():
 
 
     print("The length of the dictionary is ", len(copy_and_ordered))
+
+    if input_answer != actual_answer:
+        card = list(copy_and_ordered.keys())[current_index]     #user needs to try again
+        flash('Try again! "Rest at the end, not at the middle" - Kobe Bryant ', category='error')   #if you delete my kobe message, i will find you. and i will take ur ankles.
+        return render_template("write_set.html", set_owner=set_owner, user=current_user, title = title, card_term = card, currentIndex = current_index, cards = copy_and_ordered)
 
     if current_index < len(copy_and_ordered) - 1:
         current_index = current_index + 1
