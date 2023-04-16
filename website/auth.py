@@ -22,10 +22,17 @@ def manage_accounts():
 @login_required
 def delete_account():
     d_user = request.form.get('user')
-    print('Delete user \'', d_user, '\'')
     ausers = get_users('admin')
     musers = get_users('mod')
     users = get_users('user')
+    delete_user(d_user)
+    if d_user == current_user.username:
+        flash("Account deleted. You have been logged out.", category="success")
+        logout_user()
+        return redirect(url_for("auth.login"))
+    else:
+        s = f'Account \'' + d_user + '\' deleted.'
+        flash(s,  category="success")
     return render_template('accounts.html',user=current_user, ausers=ausers,musers=musers,users=users)    
 
 # change privileges for an account
@@ -34,10 +41,12 @@ def delete_account():
 def change_privs():
     p_user = request.form.get('user')
     new_priv = request.form.get('privilege')
-    print('Change \'', p_user, '\' to ', new_priv)
     ausers = get_users('admin')
     musers = get_users('mod')
     users = get_users('user')
+    change_user_privs(p_user, new_priv)
+    s = 'Account \'' + p_user + '\' now has privilege level : \'' + new_priv + '\'.'
+    flash(s, category="success")
     return render_template('accounts.html',user=current_user, ausers=ausers,musers=musers,users=users)    
 
 

@@ -105,17 +105,48 @@
         </tr>
     </thead>
 <tbody>
-    {% for user in ausers %}
+    {% for usr in ausers %}
         <tr>
-            <td><button class="btn btn-dark disabled">{{ user.username }}</button></td>
+            <td>
+            {% if user.get_id() == usr.username %} 
+                <div class="trash-button">
+                    <button class="remove-button trash-button" data-modal-target="#modal_REMOVE_self">
+                        <p>&#128465;</p>
+                    </button>
+                </div>
+            {% endif %}
+                <button class="btn btn-dark disabled">{{ usr.username }}</button></td>
             <td></td>
             <td></td>
-        </tr>   
+        </tr> 
+        {% if user.get_id() == usr.username %} 
+            <!-- Modal for Trash Button -->
+            <div class = "modal2" id="modal_REMOVE_self">
+                <div class = "modal2-header" style="color:rgb(255, 183, 0);">
+                    <div class = "title" >
+                        Are you sure you want delete this account ?
+                    </div>
+                    <button data-close-button ="" class = "close-button">
+                    &times; 
+                    </button>      
+                </div>
+            <div class="modal2-body">
+                <p class = "warning" >
+                    WARNING: This action cannot be undone, and will result in all card sets for this account being deleted.
+                </p>
+                <button data-reject-button class="reject-button">Do NOT delete</button>
+                <form action="{{ url_for('auth.delete_account')  }}" method="post">
+                    <input type="hidden" name="user" value="{{usr.username}}">
+                    <button class="done-button" style="background-color: #ff2e2e;" >Delete it</button>
+                </form>
+            </div>
+        </div>
+        {% endif %} 
     {% endfor %}
-    {% for user in musers %}
+    {% for usr in musers %}
         <tr>
             <td></td>
-            <td><button class="btn btn-dark" data-modal-target="#modal_mod_privs_{{ loop.index }}">{{ user.username }}</button></td>
+            <td><button class="btn btn-dark" data-modal-target="#modal_mod_privs_{{ loop.index }}">{{ usr.username }}</button></td>
             <td></td>
         </tr>
         
@@ -126,7 +157,7 @@
         <div class = "modal2" id="modal_mod_privs_{{ loop.index }}">
             <div class = "modal2-header">
                 <div class = "title" >
-                    Please select a privilege level for '{{ user.username[:46] }}...' <!-- shows only first 46 characters -->
+                    Please select a privilege level for '{{ usr.username[:46] }}...' <!-- shows only first 46 characters -->
                 </div>
 
                 <button data-close-button ="" class = "close-button">
@@ -137,10 +168,10 @@
             <div class="modal2-body">
                 <form action="{{ url_for('auth.change_privs')  }}" method="post">
 
-                    <input type="hidden" name="user" value="{{ user.username }}"> <!-- sends the old title. useful for database query-->
+                    <input type="hidden" name="user" value="{{ usr.username }}"> <!-- sends the old title. useful for database query-->
 
-                    <input type="radio" name="privilege" value="administrator"> Administrator<br>
-                    <input type="radio" name="privilege" value="moderator"> Moderator<br>
+                    <input type="radio" name="privilege" value="admin"> Administrator<br>
+                    <input type="radio" name="privilege" value="mod"> Moderator<br>
                     <input type="radio" name="privilege" value="user"> User<br>
                      
                     <button id="title_done" class="title-done-button done-button"  type="submit">
@@ -150,7 +181,7 @@
             </div>
         </div>
     {% endfor %}
-    {% for user in users %}
+    {% for usr in users %}
         <tr>
             <td></td>
             <td></td>
@@ -160,7 +191,7 @@
                         <p>&#128465;</p>
                     </button>
                 </div>
-                <button class="btn btn-dark set-button" data-modal-target="#modal_privs_{{ loop.index }}">{{ user.username }}</button>
+                <button class="btn btn-dark set-button" data-modal-target="#modal_privs_{{ loop.index }}">{{ usr.username }}</button>
             </td>
         </tr>
     
@@ -171,7 +202,7 @@
         <div class = "modal2" id="modal_privs_{{ loop.index }}">
             <div class = "modal2-header">
                 <div class = "title" >
-                    Please select a privilege level for '{{ user.username[:46] }}...' <!-- shows only first 46 characters -->
+                    Please select a privilege level for '{{ usr.username[:46] }}...' <!-- shows only first 46 characters -->
                 </div>
 
                 <button data-close-button ="" class = "close-button">
@@ -182,10 +213,10 @@
             <div class="modal2-body">
                 <form action="{{ url_for('auth.change_privs')  }}" method="post">
 
-                    <input type="hidden" name="user" value="{{ user.username }}"> <!-- sends the old title. useful for database query-->
+                    <input type="hidden" name="user" value="{{ usr.username }}"> <!-- sends the old title. useful for database query-->
 
-                    <input type="radio" name="privilege" value="administrator"> Administrator<br>
-                    <input type="radio" name="privilege" value="moderator"> Moderator<br>
+                    <input type="radio" name="privilege" value="admin"> Administrator<br>
+                    <input type="radio" name="privilege" value="mod"> Moderator<br>
                     <input type="radio" name="privilege" value="user"> User<br>
                      
                     <button id="title_done" class="title-done-button done-button"  type="submit">
@@ -203,7 +234,7 @@
         <div class = "modal2" id="modal_REMOVE_{{  loop.index  }}">
             <div class = "modal2-header" style="color:rgb(255, 183, 0);">
                 <div class = "title" >
-                    Are you sure you want delete account '{{user.username}}' ?
+                    Are you sure you want delete account '{{usr.username}}' ?
                 </div>
                 <button data-close-button ="" class = "close-button">
                 &times; 
@@ -211,11 +242,11 @@
             </div>
             <div class="modal2-body">
                 <p class = "warning" >
-                    WARNING: This action cannot be undone.
+                    WARNING: This action cannot be undone, and will result in all card sets for this account being deleted.
                 </p>
                 <button data-reject-button class="reject-button">Do NOT delete</button>
                 <form action="{{ url_for('auth.delete_account')  }}" method="post">
-                    <input type="hidden" name="user" value="{{user.username}}">
+                    <input type="hidden" name="user" value="{{usr.username}}">
                     <button class="done-button" style="background-color: #ff2e2e;" >Delete it</button>
                 </form>
             </div>

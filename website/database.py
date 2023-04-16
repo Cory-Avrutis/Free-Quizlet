@@ -140,6 +140,15 @@ def replace_definition(set_owner,title,term,new_def,old_def):
     card_sets.update_one({"User": set_owner, "Title": title}, \
                         {"$set": {'Cards.' + term: new_def}}) 
 
+# delete a user's account and all card sets for user
+def delete_user(user):
+    users.delete_one({'username' : user})
+    card_sets.delete_many({'User' : user})
+
+# change a user's privilege level
+def change_user_privs(user, new_priv):
+    users.update_one({"username": user}, \
+        {"$set": {'privs' : new_priv}}) 
 
 # To create a collection in db
 # newColl = db["new_coll_name"]
