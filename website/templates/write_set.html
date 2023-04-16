@@ -92,6 +92,12 @@ content %}
       }
     }
 
+    .input_field{ /*Chef's kiss : - ) Hide's the input box, resulting in a visual affect where it looks like user is writing on the definition text*/
+      z-index: -999;
+      opacity: 0;
+      position: absolute;
+    }
+
 
     
   </style>
@@ -101,7 +107,7 @@ content %}
   <div class="type-box">
     <div class="type-box-header">{{ card_term }}</div>
 
-    <input type="text" id="input_{{ currentIndex }}" />
+    <input type="text" class = "input_field" id="input_{{ currentIndex }}" />
 
     <p
       class="type-box-input"
