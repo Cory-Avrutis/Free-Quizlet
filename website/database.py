@@ -109,6 +109,7 @@ def get_set_by_user_title(usr:str, title:str):
     return [x for x in card_sets.find({'User' : usr}) \
               if x['Title'] == title][0]
 
+
 # return all card_sets based on a username
 def get_sets_by_user(usr:str):
     return card_sets.find({'User' : usr})

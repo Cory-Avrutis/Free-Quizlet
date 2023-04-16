@@ -2,13 +2,11 @@
 content %}
 
 <!--
-  Tutorial link for type racing website affect: https://www.youtube.com/watch?v=Hg80AjDNnJk
+  Educational credit for tutorial link on how to do a type-racing effect: https://www.youtube.com/watch?v=Hg80AjDNnJk
 
   Also, I've used prettier (vs code exstenion) to format this document better after Mariela mentioned
-  my pushes and indexes look a bit funny. Let me know if this file looks good on your screens.
+  my pushes and indexes look a bit funny. Let me know if this file looks good on your screens
 -->
-
-
 
 <head>
   <title>Write mode</title>
@@ -71,16 +69,16 @@ content %}
     }
 
     .type-box-input .active {
-      /* glithy/need to ask mariela proper syntax */
+      /*confirm with mariela if this is proper syntax */
       color: rebeccapurple;
-      position: relative; /* make the ::before absolute position relative to this element */
+      position: relative;
     }
 
     .type-box-input .active::before {
       content: '';
       position: absolute;
       left: 0;
-      bottom: -2px; /* set the position to just below the text */
+      bottom: -2px; /*sets the position to just below the text */
       height: 2px;
       width: 100%;
       opacity: 1;
@@ -93,25 +91,29 @@ content %}
         opacity: 0;
       }
     }
+
+
+    
   </style>
 </head>
 
 <body>
   <div class="type-box">
-    <div class="type-box-header">Development</div>
+    <div class="type-box-header">{{ card_term }}</div>
 
-    <input type="text" id="input_1" />
+    <input type="text" id="input_{{ currentIndex }}" />
 
     <p
       class="type-box-input"
-      id="def_1"
-      data-value="my little sentence"
+      id="def_{{  currentIndex  }}"
+      data-value="{{ cards[card_term] }}"
     ></p>
   </div>
 
+
   <script>
-    var inpField = document.querySelector('#input_1') //grabs the input element from above
-    var html_element = document.querySelector('#def_1') // grab the paragraph element
+    var inpField = document.querySelector('#input_{{ currentIndex }}') //grabs the input element from above
+    var html_element = document.querySelector('#def_{{  currentIndex  }}') // grab the paragraph element
 
     let charIndex = 0
     let correct = 0
@@ -119,6 +121,8 @@ content %}
     function convert_2_span() {
       //converts the definition into span elements
       var definition = html_element.getAttribute('data-value') // get the value of the data-value attribute
+
+      console.log('The definition recorded is ', definition)
 
       //beginning of process to convert every character of the definition (definition) into spans
       var span_elements = ''
@@ -129,7 +133,7 @@ content %}
 
       html_element.innerHTML = span_elements // set the innerHTML property (the text) of the input element (the paragraph element) to the updated span_definition
 
-      console.log('The inner html elements: ', span_elements)
+      //console.log('The inner html elements: ', span_elements)   looks good, all span characters on the console
 
       //end of process. now, the characters can be manipulated with JavaScript, like adding a classList to each character
 
@@ -154,14 +158,76 @@ content %}
           def_characters[charIndex].classList.add('incorrect') //if not, add a class named incorrect to the span element
         }
 
-        charIndex++ //update tracker/position
+        charIndex++ //update tracker (position)
 
         if (charIndex === def_characters.length) {
-          //this means if amount of characters inputted == amount of definition characters' length
-          //NOT if user inputted every character correctly
-          console.log('Done')
-        }
+          //there is no "Done" button or anything like that
+          //when the user puts input characters up to the amount of definition characters,
+          //a "button" will be manually pressed for them (like a form submission)
 
+          console.log("Done")
+
+          const form = document.createElement('form')
+          form.method = 'POST'
+          form.action = '/next-card'
+
+      
+          //input information related to the title
+          const titleInput = document.createElement('input')
+          titleInput.type = 'hidden'
+          titleInput.name = 'title'
+          titleInput.value = '{{title}}'.replace(/'/g, '&#39;') //a dumb glitch is happening here. 
+
+          /*
+            JavaScript cannot recognize special characters (~, ', etc.) 
+            So if the title is "Steven's Niche Cards",
+            then the website crashes shortly after here because JavaScript sends
+
+            "Steven#378;s" instead of "Steven's" as part of the form submission
+            When it comes to find the card set again, because the title is inaccurate, 
+            an error occurs
+
+            Working on a fix. I tried doing replace, but the replace doesn't work.
+            I'm thinking about making a python function, and just checking the title there instead, changing it
+            as needed
+          */
+
+          console.log("The title from the parameter is ", titleInput.value) 
+
+          //input information related to the setOwner (need to confirm with Cory if this is neccessary)
+          const ownerInput = document.createElement('input')
+          ownerInput.type = 'hidden'
+          ownerInput.name = 'set_owner'
+          ownerInput.value = '{{set_owner}}'
+
+          //input information related to the currentUser? (not sure, need to ask cory if needed)
+
+          //input information related to the currentIndex (useful for ordered dictionary)
+          const indexInput = document.createElement('input')
+          indexInput.type = 'hidden'
+          indexInput.name = 'current_index'
+          indexInput.value = ('{{currentIndex}}') 
+
+           /*
+            send the user's final answer up to the backend. compare the string to see if they got it right in the backend
+            if not, then just reload this write_set.html to make them try again
+            const answerInput = document.createElement('input')
+            answerInput.type = 'hidden'
+            answerInput.name = 'answer'
+            answerInput.value = userInput
+          */
+
+          //add the input fields to the form, submit the form after
+          /*form.appendChild(answerInput)*/
+          form.appendChild(titleInput)
+          form.appendChild(ownerInput)
+          form.appendChild(indexInput)
+
+          //append form to body. this one line of code below took me an hour to realize : - ) I love javascript <3 
+          document.body.appendChild(form);  // link: https://stackoverflow.com/questions/42053775/getting-error-form-submission-canceled-because-the-form-is-not-connected
+
+          form.submit()
+        }
       }
 
       def_characters.forEach((span) => span.classList.remove('active'))

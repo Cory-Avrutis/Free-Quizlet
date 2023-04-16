@@ -7,6 +7,7 @@ from quizFunc import *
 
 import copy     #to make a copy of the dictionary for write
 from collections import OrderedDict #to make that copied dictionary in order
+import html   #part of the JavaScript fix for recognizing special characters being sent back to backend
 
 # Define a blueprint called "views" for webpage viewing
 views = Blueprint("views", __name__)
@@ -64,7 +65,11 @@ def view_sets():
     # POST  - triggered when user selects a set to view
     if request.method == 'POST':
         mode = request.args.get("id")
+
         title,set_owner = request.form['info'].split(',')
+
+        print("The title from view_sets ", title)
+
         cards = get_set_by_user_title(set_owner, title)['Cards']
         if mode == "flashcard":
             return render_template("show_set.html", user=current_user, cards=cards, title=title)
@@ -85,23 +90,63 @@ def view_sets():
                 #then when user is done with first, i'll reload render_template with the second one. similiar logic for when they finish the second
                 #repeat this logic until i iterate through all the cards
 
-
-                cards = get_set_by_user_title(set_owner, title)['Cards']
-                
                 copy_and_ordered = copy.deepcopy(cards)
-                copy_and_ordered = OrderedDict(sorted(copy_and_ordered.items()))
-                numCards = len(copy_and_ordered)
+                copy_and_ordered = OrderedDict(sorted(copy_and_ordered.items())) 
 
-                return render_template("write_set.html", set_owner=set_owner, user=current_user, cards = copy_and_ordered, numCards = numCards)
-            
-            
-
+                first_card_term = list(copy_and_ordered.keys())[0]            
+                return render_template("write_set.html", set_owner=set_owner, user=current_user, title=title, card_term = first_card_term, currentIndex = 0, cards = copy_and_ordered)
             #start coding here 
             # return render_template("write.html", user=current_user, cards=cards, title=title)
 
     # GET - by default, displays all sets for viewing
     userSets = get_sets_by_privs('admin') 
     return render_template("view_sets.html", user=current_user, userSets = userSets)
+
+@views.route("/next-card", methods = ['POST', 'GET'])   
+@login_required
+def next_card():
+    #to be used after write_set.html firsts get called from views.set
+
+    
+    set_owner = request.form['set_owner']
+    title = request.form['title']
+    title = html.unescape(title)
+
+    current_index = int(request.form['current_index'])
+
+    print("The current index is ", current_index)
+    
+
+    print("The set owner is ", set_owner)
+    print("The title is ", title)
+    
+    cards = get_set_by_user_title(set_owner, title)['Cards'] 
+
+    print("The cards are ", cards)           
+    copy_and_ordered = copy.deepcopy(cards)
+    copy_and_ordered = OrderedDict(sorted(copy_and_ordered.items()))
+
+
+    print("The length of the dictionary is ", len(copy_and_ordered))
+
+    if current_index < len(copy_and_ordered) - 1:
+        current_index = current_index + 1
+        next_card = list(copy_and_ordered.keys())[current_index]            
+    
+        #render the next card's definition for the user to type
+        #need to talk to Cory about the user = current_user
+        #do i need to like pass the user as a form request ? or can i just do what i did below because of the @login required thing
+
+        #i should do a pull (push ?) request to clear up a lot of these "should i" regarding set_owner and current_usr. it looks like
+        # it's part of cory's code domain, which i am not entirely sure the ins and outs of
+
+        print("It got up to here")
+
+        return render_template("write_set.html", set_owner=set_owner, user=current_user, title = title, card_term = next_card, currentIndex = current_index, cards = copy_and_ordered)
+    else:
+        #if there are no more cards, redirect the user to the home page 
+        return render_template("home.html", user=current_user)
+
 
 
 # called when clicks on 'Edit a Set' on home.html 
