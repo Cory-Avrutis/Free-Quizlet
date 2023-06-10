@@ -40,9 +40,11 @@ Mariela:
 - Front end of the edit feature and handled error checking / input validation with database requests
 
 Steven:
-- Modals (pop-ups)
-- Backend of the edit feature & integrated modals for input of the edit feature (i.e., editing flash card through modal of any set updates the database)
-- Created add set feature. Developed both front-end and back-end aspects for users to create a new set of flash cards.
+- Developed modals: Created pop-up windows (modals) for various interactions throughout project.
+- Backend of edit feature: Integrated modals to edit flashcards within existing sets and update the corresponding database entries/flashcards.
+- Created add set feature: Implemented the ability to add new flashcards to new sets, handling both front-end and back-end development.
+- Created write mode feature: Enabled users to practice typing the definitions of terms with a visual type-trace effect, utilizing both front-end and back-end development.
+
 
 Description of how would we host the website for distrubition:
 - To distribute we could either create an Azure or AWS instance to act as our web server, and allot the necessary RAM and proper OS. We would then use the apache HTPP server software to host the website.
