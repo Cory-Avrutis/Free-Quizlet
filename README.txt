@@ -41,8 +41,8 @@ Mariela:
 
 Steven:
 - Modals (pop-ups)
-- Backend of the edit feature
-- Create set
+- Backend of the edit feature & integrated modals for input of the edit feature (i.e., editing flash card through modal of any set updates the database)
+- Create set feature. Developed both front-end and back-end aspects
 
 Description of how would we host the website for distrubition:
 - To distribute we could either create an Azure or AWS instance to act as our web server, and allot the necessary RAM and proper OS. We would then use the apache HTPP server software to host the website.
