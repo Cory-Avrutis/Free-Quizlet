@@ -1,9 +1,8 @@
 Developed by Cory Avrutis, Mariela Badillo, and William Steven Matiz
 
 # Free-Quizlet
-This is our web application to simulate certain aspects of quizlet, !
+This is our web application to simulate certain aspects of quizlet!
 
-A description of the problem you are trying to solve:
 Recently, Quizlet has made their services a paid service. We believe that studying is hard enough and that users should continue to have a free experience to the learning environment that Quizlet has always made at a free price.
 
 Any details regarding instructions for the user interface that is beyond the obvious:
